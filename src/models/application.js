@@ -2,18 +2,7 @@ import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 const ApplicationSchema = new mongoose.Schema(
   {
-    title: { //job title
-      type: String,
-      required: true,
-      trim: true,
-      min: 10,
-      max: 100,
-    },
-    tags: {
-      type: Array,
-      required: false,
-      default: [],
-    },
+    
     owner: { //user name
       type: String,
       required: true,
@@ -23,13 +12,8 @@ const ApplicationSchema = new mongoose.Schema(
       required: true,
       ref: "course",
     },
-    images: {
-      type: Array,
-      default: [],
-    },
-    isApproved: {
-      type: Boolean,
-      default: false,
+    state :{
+      type : String
     },
     isLiked:{
         type:Boolean,
@@ -39,10 +23,6 @@ const ApplicationSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    numComments:{
-      type:Number,
-      default:0,
-    }
   },
   {
     timestamps: true,

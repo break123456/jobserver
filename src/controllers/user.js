@@ -1,4 +1,4 @@
-const User = require('../models/user')
+const {User} = require('../models/user')
 const jwt = require('jsonwebtoken')
 const settings = require('../configs/settings')
 
@@ -42,15 +42,10 @@ exports.userLogin = async(request, response) =>{
         const user = await User.findOne({email: request.body.email, password: request.body.password});
 
         if(user){
-            const token = jwt.sign({id: user._id}, 
-                settings.config.passport.secret, {expiresIn: "1h"} );
-            response
-             .status(200)
-            .json({
-            success: true,
+            const token = jwt.sign({id: user._id},settings.config.passport.secret, {expiresIn: "1h"} );
+            response.status(200).json({success: true,
             data: {
-              id: user._id,
-              email: user.email,
+              user : {id : user._id, name : user.name, email : user.email, },
               token: token,
             },
        });

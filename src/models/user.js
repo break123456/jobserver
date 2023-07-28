@@ -1,59 +1,111 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 
-const Schema = mongoose.Schema;
-
-const userSchema = new Schema({
-    name:{
-        type: String,
-        required: true,
+// Base user schema
+const userSchema = new mongoose.Schema({
+    name: { 
+        type: String, 
+        required: true, 
         trim: true,
-        min: 5,
+        min: 3,
         max: 20
     },
-    uniqName:{ //uniq code for every user
-        type: String,
-        trim: true,
-        min: 5,
-        max: 20
+    email: { 
+        type: String, 
+        required: true, 
+        unique: true 
     },
-    email:{
-        type: String,
-        required: true,
-        trim: true,
-        unique: true,
-        lowercase: true
+    mobile: { 
+        type: String, 
+        required: true, 
+        unique: true 
     },
-    password:{
-        type: String,
-        required: true,
+    password: { 
+        type: String, 
+        required: true 
     },
-    mobile:{
-        type: String,
-        min: 10,
-        default:''
-    },
+    image: { 
+        type: String, 
+    },    
+    // role: { 
+    //     type: String, 
+    // },    
     active:{
         type: Boolean,
         default: 1
-    },
-    image:{
-        type: String
-    },
-    role:{ //admin -1, student -0
-        type: Boolean,
-        default: 0
     },
     status:{
         type: Boolean,
         default: 1
     },
-    refId: { //referene id of admin or student full data
+    refId: { 
         type: String
     }
-},
-{
+},{
     timestamps:true,
 });
- 
-const user = mongoose.model('user', userSchema);
-module.exports= user;
+
+// Discriminator schemas for each role -->
+const studentSchema = new mongoose.Schema({
+    skills : {
+        type: Array,
+        default: [],
+    },
+    location: {
+        type : String,
+    }
+});
+
+const employerSchema = new mongoose.Schema({
+    company: { 
+        type: String, 
+    },
+    
+});
+
+const adminSchema = new mongoose.Schema({
+    // Additional fields specific to admins
+});
+
+
+// Generating token
+studentSchema.methods.generateAuthToken = async function () {
+    try {
+        let token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET)
+        await this.save()
+        return token
+    } catch (error) {
+        console.log(error)
+    }
+}
+//  token to reset password
+studentSchema.methods.createPasswordResetToken = async function () {
+    const resetToken = crypto.randomBytes(32).toString('hex')
+    this.passwordResetToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex')
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000 //10 minutes
+    return resetToken
+}
+
+//    hashing the password...
+studentSchema.pre('save', async function (next) {
+    console.log('hi bcrypt')
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 12)
+    }
+    next()
+})
+
+
+const User = mongoose.model("User", userSchema);
+
+const Student = User.discriminator("Student", studentSchema);
+const Employer = User.discriminator("Employer", employerSchema);
+const Admin = User.discriminator("Admin", adminSchema);
+
+
+module.exports = {User, Student, Employer, Admin};

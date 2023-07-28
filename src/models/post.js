@@ -26,7 +26,7 @@ const PostSchema = new mongoose.Schema(
     parentId: { //compa id
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "course",
+      ref: "user",
     },
     isApproved: {
       type: Boolean,
