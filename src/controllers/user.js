@@ -13,6 +13,10 @@ exports.userSignup = async(request, response)=>{
             });
         }
         const user = request.body;
+        if(user.role == "student")
+          user.role = 0;
+        else 
+          user.role = 1;
         console.log(user)
         const newUser = new User(user);
         await newUser.save();
