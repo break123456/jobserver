@@ -55,7 +55,15 @@ const studentSchema = new mongoose.Schema({
     },
     location: {
         type : String,
-    }
+    },
+    preferences : {
+        type : Array,
+        default : [],
+    },
+    workMode : {
+        type : String,
+        enum: ["office", "wfh", "both"],
+    },
 });
 
 const employerSchema = new mongoose.Schema({

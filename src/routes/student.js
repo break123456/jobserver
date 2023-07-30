@@ -1,12 +1,15 @@
 const express = require('express');
-const { updateStudentbyId, getStudentById, deleteStudentById, addStudent, studentSignUp, studentSignIn } = require('../controllers/student');
+const { updateStudentbyId, getStudentById, deleteStudentById, studentSignUp, studentSignIn, getStudentPreferenceById, getAllStudents } = require('../controllers/student');
 
 const studentRouter = express.Router();
 studentRouter.post('/register', studentSignUp);
 studentRouter.post('/login', studentSignIn);
-studentRouter.post('/', addStudent);
-studentRouter.put('/:id', updateStudentbyId);
+
+studentRouter.get('/allstudents', getAllStudents);
+studentRouter.patch('/:id', updateStudentbyId);
 studentRouter.get('/:id', getStudentById);
 studentRouter.delete('/:id', deleteStudentById);
+
+studentRouter.get('/preferences/:id', getStudentPreferenceById)
 
 module.exports = studentRouter;

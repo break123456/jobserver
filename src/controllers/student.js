@@ -1,5 +1,6 @@
 const { Student, User } = require("../models/user");
 const bcrypt = require('bcryptjs');
+const { ObjectId } = require('mongodb');
 
 exports.studentSignUp = async(req, res)=>{
     const { name, email, password, mobile } = req.body;
@@ -45,44 +46,72 @@ exports.studentSignIn = async(req, res)=>{
           res.status(400).json({ error: "Student error" });
         }
     } catch (error) {
-    console.log(error);
+      res.status(404).json({message: error.message});
     }
 }
 
-exports.addStudent = async (req, res) => {
-    try {
-        const body = req.body;
-        const student = new Student(body);
-        const newStudent = await student.save();
-        res.status(200).josn({success : true, message : "Student added successfully"});
-    } catch (error) {
-        console.log(error)
-        res.status(400).json({message: error.message, success : false});
-    }
+
+exports.getAllStudents = async (req, res)=>{
+  try {
+    const student = await Student.find({status: true});
+    res.status(200).json(student);
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
 }
 
 exports.getStudentById = async (req, res)=>{
-    const student = await Student.findOne(req.params.id);
-    res.status(200).json(student);
+  try {
+    const student = await Student.findById(req.params.id);
+    if(student ){
+      res.status(200).json(student);
+    }else{
+      res.status(404).json({success : false, message : "Student not found"})
+    }
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
+  
+
 }
 
 exports.deleteStudentById = async (req, res)=>{
+  try {
     const id = req.params.id;
     const student = await Student.findByIdAndUpdate(id, {status : false} );
+    console.log(student);
     res.status(200).json({ success: true, message : "student deleted successfully"});
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
 }
 
 exports.updateStudentbyId = async (req, res)=>{
     try {
-        const _id = req.params.id;
-        console.log(_id);
+        const id = req.params.id;
+        console.log(id);
         const body = req.body;
-        const newStudent = await User.create(body);
+        const newStudent = await Student.findByIdAndUpdate(id, body);
         console.log(newStudent);
         if(newStudent){
             res.status(200).json({sucess : true, messsage : "student updated successfully...!"});
         }else{
             res.status(200).json({sucess : false, messsage : "some error occured while updating student"});
+        }
+    } catch (error) {
+        res.status(404).json({message: error.message});
+    }
+}
+
+exports.getStudentPreferenceById = async (req, res)=>{
+    try {
+        const id = req.params.id;
+        const myPref = await Student.findById(id);
+        console.log(myPref);
+        if(myPref){
+            res.status(200).json({sucess : true, preferences : myPref.preferences, workMode : myPref.workMode});
+        }else{
+            res.status(200).json({sucess : false, messsage : "some error occured.."});
         }
     } catch (error) {
         res.status(404).json({message: error.message});
