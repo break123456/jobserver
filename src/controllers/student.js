@@ -86,6 +86,7 @@ exports.deleteStudentById = async (req, res)=>{
   }
 }
 
+
 exports.updateStudentbyId = async (req, res)=>{
     try {
         const id = req.params.id;
