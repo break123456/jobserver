@@ -79,7 +79,7 @@ const adminSchema = new mongoose.Schema({
 
 
 // Generating token
-studentSchema.methods.generateAuthToken = async function () {
+userSchema.methods.generateAuthToken = async function () {
     try {
         let token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET)
         await this.save()
@@ -89,7 +89,7 @@ studentSchema.methods.generateAuthToken = async function () {
     }
 }
 //  token to reset password
-studentSchema.methods.createPasswordResetToken = async function () {
+userSchema.methods.createPasswordResetToken = async function () {
     const resetToken = crypto.randomBytes(32).toString('hex')
     this.passwordResetToken = crypto
         .createHash('sha256')
@@ -100,7 +100,7 @@ studentSchema.methods.createPasswordResetToken = async function () {
 }
 
 //    hashing the password...
-studentSchema.pre('save', async function (next) {
+userSchema.pre('save', async function (next) {
     console.log('hi bcrypt')
     if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 12)
