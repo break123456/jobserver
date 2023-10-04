@@ -24,9 +24,9 @@ app.use(passport.initialize())
 app.use(passport.initialize())
 require('./configs/passport-config').passportStrategy(passport)
 
-// const URL = 'mongodb+srv://intern:intern321@cluster0.shjue.mongodb.net/internship?retryWrites=true&w=majority';
+const URL = 'mongodb+srv://intern:intern321@cluster0.shjue.mongodb.net/internship?retryWrites=true&w=majority';
 
-connection(process.env.MONGODB_URL);
+connection(URL);
 
 app.get('/', function(req, res) {
     res.send("Hello world");
@@ -35,6 +35,6 @@ app.get('/', function(req, res) {
 app.use('/api/user', userRouter);
 app.use('/api/student', studentRouter);
 
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT | 4000, () => {
     console.log(`jobserver started at port ${PORT}`);
 });
