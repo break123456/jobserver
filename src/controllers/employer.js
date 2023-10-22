@@ -1,5 +1,6 @@
 const { Employer } = require("../models/user");
 const bcrypt = require('bcryptjs');
+const strUtil = require('../helper/string-util')
 
 exports.employerSignUp = async(req, res)=>{
     const { name, email, password, mobile } = req.body;
@@ -51,5 +52,24 @@ exports.employerLogin = async(req, res)=>{
 }
 
 exports.postJob = async(req, res) => {
-  res.status(404).json({message: error.message});
+    try {
+      const { title, skills, workModel, workTime, numOpening, duration, startDate, responsiblity, stipend } = req.body;
+      const newPost = new Post({
+          title,
+          slug: strUtil.createSlug(title),
+          skills,
+          workModel,
+          workTime,
+          numOpening,
+          duration,
+          startDate,
+          responsiblity,
+          stipend
+      });
+      await newPost.save();  
+      res.status(200).send({msg:"Post added successfully"})
+    } catch (error) {
+        console.log("error: ", error);
+        res.status(401).send("Post addition failed")
+    }   
 }
