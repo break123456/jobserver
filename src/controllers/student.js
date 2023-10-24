@@ -1,6 +1,7 @@
 const { Student, User } = require("../models/user");
 const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
+const {trainingSchema} = require('./../models/schema/student-info')
 
 exports.studentSignUp = async(req, res)=>{
     const { name, email, password, mobile } = req.body;
@@ -118,4 +119,85 @@ exports.getStudentPreferenceById = async (req, res)=>{
         res.status(404).json({message: error.message});
     }
 
+}
+
+exports.addTraining = async(req,res) => {
+  try {
+    const { id, title, company, workMode, startDate, endDate, description } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    let entry = {
+      title: title,
+      company,
+      workMode,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      description
+    };
+    //await entry.save();
+    student.training.push(entry);
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Training added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+
+exports.addExperience = async(req,res) => {
+  try {
+    const { id, profile, company, workMode, startDate, endDate, description } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    let entry = {
+      profile: profile,
+      company,
+      workMode,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      description
+    };
+    //await entry.save();
+    student.experience.push(entry);
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Experience added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.addEducation = async(req,res) => {
+  try {
+    const { id, school, percentage, startDate, endDate, degreeType } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    let entry = {
+      school,
+      percentage,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      degreeType
+    };
+    //await entry.save();
+    student.education.push(entry);
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Education added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
 }

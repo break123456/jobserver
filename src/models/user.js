@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
+const {trainingSchema, experienceSchema, educationSchema} = require('./schema/student-info')
 
 // Base user schema
 const userSchema = new mongoose.Schema({
@@ -49,10 +50,9 @@ const userSchema = new mongoose.Schema({
 
 // Discriminator schemas for each role -->
 const studentSchema = new mongoose.Schema({
-    skills : {
-        type: Array,
-        default: [],
-    },
+    skills : [{
+        type: String
+    }],
     location: {
         type : String,
     },
@@ -62,8 +62,11 @@ const studentSchema = new mongoose.Schema({
     },
     workMode : {
         type : String,
-        enum: ["office", "wfh", "both"],
+        enum: ["office", "remote", "both"],
     },
+    experience: [experienceSchema],
+    education: [educationSchema],
+    training: [trainingSchema]
 });
 
 const employerSchema = new mongoose.Schema({

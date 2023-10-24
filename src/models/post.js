@@ -27,6 +27,9 @@ const PostSchema = new mongoose.Schema(
       type: String,
       default: 'full' // part -> fulltime, parttime
     },
+    location : [{ //cities
+      type: String
+    }],
     numOpening: {
       type: Number,
       default: 1

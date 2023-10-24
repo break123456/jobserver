@@ -53,7 +53,7 @@ exports.employerLogin = async(req, res)=>{
 
 exports.postJob = async(req, res) => {
     try {
-      const { title, skills, workModel, workTime, numOpening, duration, startDate, responsiblity, stipend } = req.body;
+      const { title, skills, workModel, workTime, numOpening, duration, startDate, responsiblity, stipend, location } = req.body;
       const newPost = new Post({
           title,
           slug: strUtil.createSlug(title),
@@ -64,8 +64,10 @@ exports.postJob = async(req, res) => {
           duration,
           startDate,
           responsiblity,
-          stipend
+          stipend,
+          location
       });
+      newPost.isApproved = true;
       await newPost.save();  
       res.status(200).send({msg:"Post added successfully"})
     } catch (error) {
