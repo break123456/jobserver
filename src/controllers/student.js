@@ -149,6 +149,34 @@ exports.addTraining = async(req,res) => {
 }
 
 
+exports.getTrainingAll = async(req,res) => {
+  try {
+    const { userid } = req.query;
+    console.log("userid:" + userid);
+    const student = await Student.findById(userid);
+    //return all trainings
+    return res.status(200).json({sucess : true, trainings: student.training});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.getTraining = async(req,res) => {
+  try {
+    const { id, userid } = req.query;
+    const student = await Student.findById(userid);
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    let training= student.training.find(obj => {
+      return obj.id === id
+    })
+    return res.status(200).json({sucess : true, training : training});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
 exports.addExperience = async(req,res) => {
   try {
     const { id, profile, company, workMode, startDate, endDate, description } = req.body;

@@ -13,6 +13,8 @@ studentRouter.delete('/:id', student.deleteStudentById);
 studentRouter.get('/preferences/:id', student.getStudentPreferenceById)
 
 studentRouter.post('/training/add', student.addTraining)
+studentRouter.get('/training/all', student.getTrainingAll)
+studentRouter.get('/training/get', student.getTraining)
 studentRouter.post('/experience/add', student.addExperience)
 studentRouter.post('/education/add', student.addEducation)
 
