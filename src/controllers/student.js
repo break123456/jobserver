@@ -204,6 +204,34 @@ exports.addExperience = async(req,res) => {
   }
 }
 
+exports.getExperienceAll = async(req,res) => {
+  try {
+    const { userid } = req.query;
+    console.log("userid:" + userid);
+    const student = await Student.findById(userid);
+    //return all experiences
+    return res.status(200).json({sucess : true, experiences: student.experience});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.getExperience = async(req,res) => {
+  try {
+    const { id, userid } = req.query;
+    const student = await Student.findById(userid);
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    let experience= student.experience.find(obj => {
+      return obj.id === id
+    })
+    return res.status(200).json({sucess : true, experience : experience});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
 exports.addEducation = async(req,res) => {
   try {
     const { id, school, percentage, startDate, endDate, degreeType } = req.body;
@@ -225,6 +253,34 @@ exports.addEducation = async(req,res) => {
     student.education.push(entry);
     await student.save();
     return res.status(200).json({sucess : true, messsage : "Education added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.getEducationAll = async(req,res) => {
+  try {
+    const { userid } = req.query;
+    console.log("userid:" + userid);
+    const student = await Student.findById(userid);
+    //return all educations
+    return res.status(200).json({sucess : true, educations: student.education});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.getEducation = async(req,res) => {
+  try {
+    const { id, userid } = req.query;
+    const student = await Student.findById(userid);
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    let education= student.education.find(obj => {
+      return obj.id === id
+    })
+    return res.status(200).json({sucess : true, education : education});
   } catch(error) {
     res.status(500).json({error: error.message});
   }
