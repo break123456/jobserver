@@ -23,6 +23,7 @@ studentRouter.get('/education/all', student.getEducationAll)
 studentRouter.get('/education/get', student.getEducation)
 studentRouter.post('/skill/add', student.addSkill)
 studentRouter.post('/project/add', student.addProject)
-
+studentRouter.post('/additional/add', student.addAdditional) //extra accomplishment, extra curriculum 
+studentRouter.post('/preference/add', student.addPreference)
 
 module.exports = studentRouter;
