@@ -285,3 +285,46 @@ exports.getEducation = async(req,res) => {
     res.status(500).json({error: error.message});
   }
 }
+
+exports.addSkill = async(req,res) => {
+  try {
+    const { id, skill } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    student.skills.push(skill);
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Skill added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.addProject = async(req,res) => {
+  try {
+    const { id, title, startDate, endDate, link } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    let entry = {
+      title,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      link
+    };
+    console.log("add project:" + entry)
+    //await entry.save();
+    student.project.push(entry);
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Project added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}

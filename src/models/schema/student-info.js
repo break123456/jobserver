@@ -65,4 +65,17 @@ const educationSchema = new mongoose.Schema({
     timestamps: true
 });
 
-module.exports = {trainingSchema, experienceSchema, educationSchema};
+const projectSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        trim: true
+    },
+    startDate: Date,
+    endDate : Date,
+    link: String
+},
+{
+    timestamps: true
+});
+
+module.exports = {trainingSchema, experienceSchema, educationSchema, projectSchema};

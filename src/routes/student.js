@@ -21,6 +21,8 @@ studentRouter.get('/experience/get', student.getExperience)
 studentRouter.post('/education/add', student.addEducation)
 studentRouter.get('/education/all', student.getEducationAll)
 studentRouter.get('/education/get', student.getEducation)
+studentRouter.post('/skill/add', student.addSkill)
+studentRouter.post('/project/add', student.addProject)
 
 
 module.exports = studentRouter;
