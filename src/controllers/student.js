@@ -319,11 +319,47 @@ exports.addProject = async(req,res) => {
       endDate: new Date(endDate),
       link
     };
-    console.log("add project:" + entry)
-    //await entry.save();
-    student.project.push(entry);
+    student.projects.push(entry);
     await student.save();
     return res.status(200).json({sucess : true, messsage : "Project added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.addAdditional = async(req,res) => {
+  try {
+    const { id, details } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if(student.additionals == undefined)
+      student.additionals = [];
+
+    student.additionals.push(details);
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Additional added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.addPreference = async(req,res) => {
+  try {
+    const { id, preference } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    student.preferences.push(preference);
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "preference added."});
   } catch(error) {
     res.status(500).json({error: error.message});
   }

@@ -68,7 +68,11 @@ const studentSchema = new mongoose.Schema({
     experience: [experienceSchema],
     education: [educationSchema],
     training: [trainingSchema],
-    projects: [projectSchema]
+    projects: [projectSchema],
+    additionals : [{
+        type: String,
+        trim: true
+    }]
 });
 
 const employerSchema = new mongoose.Schema({
