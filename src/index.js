@@ -14,14 +14,14 @@ const app = express();
 const PORT = process.env.PORT;
 app.use(bodyParser.json({extended: true}));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(
+/*app.use(
     cors({
       origin: "*",
       methods: "GET,POST,PUT,DELETE,PATCH",
       credentials: true,
     })
-  );
-app.use(passport.initialize())
+  );*/
+app.use(cors())
 app.use(passport.initialize())
 require('./configs/passport-config').passportStrategy(passport)
 
