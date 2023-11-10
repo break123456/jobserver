@@ -1,5 +1,5 @@
-import { ObjectId } from "mongodb";
-import mongoose from "mongoose";
+
+const mongoose = require("mongoose");
 const PostSchema = new mongoose.Schema(
   {
     title: {
@@ -16,18 +16,20 @@ const PostSchema = new mongoose.Schema(
     },
     skills : {
       type: Array,
-      required: false,
+      required: true,
       default: [],
     },
     workModel: {
       type: String,
+      enum : ["remote", "office"],
       default: 'remote' //other is office
     },
     workTime: {
       type: String,
+      enum : ["full", "part"],
       default: 'full' // part -> fulltime, parttime
     },
-    location : [{ //cities
+    locations : [{ //cities
       type: String
     }],
     numOpening: {
@@ -74,12 +76,8 @@ const PostSchema = new mongoose.Schema(
     questions: [{
       type: String
     }],
-    owner: { //employer code
-      type: String,
-      required: true,
-    },
-    parentId: { //employer id
-      type: Schema.Types.ObjectId,
+    ownerId: { //employer id
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "user",
     },
@@ -94,6 +92,11 @@ const PostSchema = new mongoose.Schema(
     numApplication: {
       type: Number,
       default: 0,
+    },
+    status : {
+      type : String,
+      enum : ["pending", "live", "closed"],
+      default: "pending"
     }
   },
   {
@@ -101,4 +104,5 @@ const PostSchema = new mongoose.Schema(
   }
 );
 const Post = mongoose.model("Post", PostSchema);
-export default Post;
+
+module.exports = Post;

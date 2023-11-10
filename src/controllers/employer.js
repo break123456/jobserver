@@ -1,4 +1,5 @@
 const { Employer } = require("../models/user");
+const Post = require("../models/post");
 const bcrypt = require('bcryptjs');
 const strUtil = require('../helper/string-util')
 
@@ -51,9 +52,9 @@ exports.employerLogin = async(req, res)=>{
     }
 }
 
-exports.postJob = async(req, res) => {
+exports.addPost = async(req, res) => {
     try {
-      const { title, skills, workModel, workTime, numOpening, duration, startDate, responsiblity, stipend, location } = req.body;
+      const { id, title, skills, workModel, workTime, numOpening, duration, startDate, responsiblity, stipend, locations } = req.body;
       const newPost = new Post({
           title,
           slug: strUtil.createSlug(title),
@@ -62,16 +63,40 @@ exports.postJob = async(req, res) => {
           workTime,
           numOpening,
           duration,
-          startDate,
+          startDate: new Date(startDate),
           responsiblity,
           stipend,
-          location
+          locations,
+          ownerId: id
       });
       newPost.isApproved = true;
       await newPost.save();  
       res.status(200).send({msg:"Post added successfully"})
     } catch (error) {
         console.log("error: ", error);
-        res.status(401).send("Post addition failed")
+        res.status(401).json({error: error.message, msg: "Post addition failed"})
     }   
+}
+
+exports.filterPost = async(req, res) => {
+  try {
+    const { id } = req.query;
+    let posts = await Post.find({ownerId: id});
+    res.status(200).send({posts: posts, msg: "success"})
+  } catch (error) {
+      console.log("error: ", error);
+      res.status(401).json({error: error.message, msg: "Post filter failed"})
+  }   
+}
+
+exports.getPost = async(req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("get post:" + id)
+    let post = await Post.findById(id);
+    res.status(200).send({post: post, msg: "success"})
+  } catch (error) {
+      console.log("error: ", error);
+      res.status(401).json({error: error.message, msg: "Post get failed"})
+  }   
 }

@@ -1,4 +1,5 @@
 const { Student, User } = require("../models/user");
+const Application = require('../models/application')
 const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
 const {trainingSchema} = require('./../models/schema/student-info')
@@ -360,6 +361,25 @@ exports.addPreference = async(req,res) => {
     student.preferences.push(preference);
     await student.save();
     return res.status(200).json({sucess : true, messsage : "preference added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.applyPost = async(req, res) => {
+  try {
+    const { id, postid } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    //check post also
+    const entry = new Application({ userId: id, postId: postid});
+    await entry.save();
+    return res.status(200).json({sucess : true, messsage : "application added."});
   } catch(error) {
     res.status(500).json({error: error.message});
   }

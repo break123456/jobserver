@@ -1,32 +1,27 @@
-import { ObjectId } from "mongodb";
-import mongoose from "mongoose";
+const mongoose = require('mongoose') 
+
 const ApplicationSchema = new mongoose.Schema(
   {
-    
-    owner: { //user name
-      type: String,
+    userId: { //user id
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: 'user'
     },
-    parentId: { //course id
-      type: Schema.Types.ObjectId,
+    postId: { //post id
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "course",
+      ref: "post",
     },
     state :{
-      type : String
+      type : String,
+      enum : ["pending", "rejected", "nointerst", "shortlist", "hired" ],
+      default: "pending"
     },
-    isLiked:{
-        type:Boolean,
-        default:false,
-    },
-    numLikes: {
-      type: Number,
-      default: 0,
-    },
+    answers : [String]
   },
   {
     timestamps: true,
   }
 );
 const Application = mongoose.model("Application", ApplicationSchema);
-export default Application;
+module.exports = Application;
