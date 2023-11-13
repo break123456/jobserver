@@ -7,6 +7,7 @@ const cors = require('cors');
 const studentRouter = require('./routes/student');
 const userRouter = require('./routes/user');
 const employerRouter = require('./routes/employer');
+const applicationRouter = require('./routes/application');
 
 dotenv.config({path : "../.env"});
 
@@ -36,6 +37,7 @@ app.get('/', function(req, res) {
 app.use('/api/user', userRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/employer', employerRouter);
+app.use('/api/application', applicationRouter);
 
 app.listen(process.env.PORT | 4000, () => {
     console.log(`jobserver started at port ${PORT}`);
