@@ -1,4 +1,6 @@
 const Application  = require("../models/application");
+const { Student } = require("../models/user");
+
 const Post = require("../models/post");
 
 // Apply for a job
@@ -17,7 +19,10 @@ exports.apply = async (req, res) => {
 exports.filter = async (req, res) => {
     try {
         const { postId } = req.query;
-        const applications = await Application.find({ postId: postId });
+        const applications = await Application.find({ postId: postId }).populate({
+            path:'userId',
+            model: Student
+        }).exec();;
         res.status(200).json({applications: applications});
     } catch (error) {
         res.status(500).json({ error: error.message });
