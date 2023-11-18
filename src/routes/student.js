@@ -26,5 +26,6 @@ studentRouter.post('/project/add', student.addProject)
 studentRouter.post('/additional/add', student.addAdditional) //extra accomplishment, extra curriculum 
 studentRouter.post('/preference/add', student.addPreference)
 studentRouter.post('/post/apply', student.applyPost)
+studentRouter.post('/application/applied', student.allAppliedPosts)
 
 module.exports = studentRouter;

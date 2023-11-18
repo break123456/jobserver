@@ -384,3 +384,22 @@ exports.applyPost = async(req, res) => {
     res.status(500).json({error: error.message});
   }
 }
+
+//will return all applied data for an user
+exports.allAppliedPosts  = async(req, res) => {
+  try {
+    const { id } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    //check post also
+    const applications = await Application.find({ userId: id});
+    return res.status(200).json({sucess : true, applications : applications});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}

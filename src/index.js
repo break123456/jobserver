@@ -8,6 +8,8 @@ const studentRouter = require('./routes/student');
 const userRouter = require('./routes/user');
 const employerRouter = require('./routes/employer');
 const applicationRouter = require('./routes/application');
+const globalDataRouter = require('./routes/globaldata');
+const globalLoadRouter = require('./routes/dataload');
 
 dotenv.config({path : "../.env"});
 
@@ -38,6 +40,8 @@ app.use('/api/user', userRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/employer', employerRouter);
 app.use('/api/application', applicationRouter);
+app.use('/api/data', globalDataRouter);
+app.use('/api/load', globalLoadRouter);
 
 app.listen(process.env.PORT | 4000, () => {
     console.log(`jobserver started at port ${PORT}`);

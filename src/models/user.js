@@ -79,6 +79,10 @@ const employerSchema = new mongoose.Schema({
     company: { 
         type: String, 
     },
+    slug: {
+        type: String,
+        lowercase : true
+    }
     
 });
 
