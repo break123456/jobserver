@@ -10,13 +10,10 @@ exports.studentSignUp = async(req, res)=>{
     return res.status(422).json({ Error: "Plz fill all the field properly.." });
   }
   try {
-    console.log("sanjany--->")
     const StudentExist = await Student.findOne({ email: email });
-    console.log("sanjany--->")
     if (StudentExist) {
         return res.status(422).json({ Error: "Student exist" });
     }
-    console.log("sanjany--->")
     const student = new Student(req.body);
     const newStudent = await student.save();
     res.status(200).json({ success: true, Student : newStudent });

@@ -79,29 +79,6 @@ exports.addPost = async (req, res) => {
   }
 }
 
-exports.filterPost = async (req, res) => {
-  try {
-    const { id } = req.query;
-    let posts = await Post.find({ ownerId: id });
-    res.status(200).send({ posts: posts, msg: "success" })
-  } catch (error) {
-    console.log("error: ", error);
-    res.status(401).json({ error: error.message, msg: "Post filter failed" })
-  }
-}
-
-exports.getPost = async (req, res) => {
-  try {
-    const { id } = req.params;
-    console.log("get post:" + id)
-    let post = await Post.findById(id);
-    res.status(200).send({ post: post, msg: "success" })
-  } catch (error) {
-    console.log("error: ", error);
-    res.status(401).json({ error: error.message, msg: "Post get failed" })
-  }
-}
-
 // Function to query TXT records for a domain using DNS
 function queryTxtRecords(domain) {
   return new Promise((resolve, reject) => {

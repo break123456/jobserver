@@ -94,7 +94,7 @@ const adminSchema = new mongoose.Schema({
 // Generating token
 userSchema.methods.generateAuthToken = async function () {
     try {
-        let token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET)
+        let token = jwt.sign({ _id: this._id, email: this.email }, process.env.JWT_SECRET)
         await this.save()
         return token
     } catch (error) {

@@ -10,6 +10,7 @@ const employerRouter = require('./routes/employer');
 const applicationRouter = require('./routes/application');
 const globalDataRouter = require('./routes/globaldata');
 const globalLoadRouter = require('./routes/dataload');
+const postRouter = require('./routes/post');
 
 dotenv.config({path : "../.env"});
 
@@ -42,6 +43,7 @@ app.use('/api/employer', employerRouter);
 app.use('/api/application', applicationRouter);
 app.use('/api/data', globalDataRouter);
 app.use('/api/load', globalLoadRouter);
+app.use('/api/post', postRouter);
 
 app.listen(process.env.PORT | 4000, () => {
     console.log(`jobserver started at port ${PORT}`);
