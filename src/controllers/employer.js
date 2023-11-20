@@ -3,6 +3,7 @@ const Post = require("../models/post");
 const bcrypt = require('bcryptjs');
 const strUtil = require('../helper/string-util')
 const dns = require('dns');
+const jwt = require('jsonwebtoken')
 
 exports.employerSignUp = async (req, res) => {
   const { name, email, password, mobile } = req.body;
@@ -16,11 +17,18 @@ exports.employerSignUp = async (req, res) => {
     if (employeEmail || employeMobile) {
       return res.status(422).json({ Error: "account exist" });
     }
-    const employer = new Employer(req.body);
-    const token = await employer.generateAuthToken();
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+    const employer = new Employer({
+      name: name.trim(),
+      email: email.trim(),
+      password: passwordHash,
+      mobile: mobile,
+      active: 1 //TODO: will change later
+    });
     const newEmployer = await employer.save();
 
-    res.status(200).json({ success: true, message: "your account has been created successfully...", user: newEmployer, token: token });
+    res.status(200).json({ success: true, message: "your account has been created successfully..." });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -32,18 +40,19 @@ exports.employerLogin = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ error: "fill proper details" });
     }
-    const employee = await Employer.findOne({ email }).select("+password");
-    if (employee) {
-      const isMatch = await bcrypt.compare(password, employee.password);
-
-      const token = await employee.generateAuthToken();
-
+    const employer = await Employer.findOne({ email }).select("+password");
+    if (employer) {
+      const isMatch = await bcrypt.compare(password, employer.password);
       if (!isMatch) {
         console.log("password not match");
         res.status(400).json({ error: "invailid login details" });
       } else {
-        console.log("user is logged in");
-        res.status(200).json({ message: "login sucessfull", user: employee, token });
+        console.log("employer is logged in");
+        const token = jwt.sign({ 
+          id: employer._id, 
+          email: employer.email }, 
+          process.env.JWT_SECRET);
+        res.status(200).json({ message: "login sucessfull", user: employer, token });
       }
     } else {
       res.status(400).json({ error: "user not found" });
