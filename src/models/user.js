@@ -94,7 +94,7 @@ const adminSchema = new mongoose.Schema({
 // Generating token
 userSchema.methods.generateAuthToken = async function () {
     try {
-        let token = jwt.sign({ _id: this._id, email: this.email }, process.env.JWT_SECRET)
+        let token = jwt.sign({ id: this._id, email: this.email }, process.env.JWT_SECRET)
         await this.save()
         return token
     } catch (error) {
@@ -115,9 +115,10 @@ userSchema.methods.createPasswordResetToken = async function () {
 //    hashing the password...
 userSchema.pre('save', async function (next) {
     console.log('hi bcrypt')
+    /*
     if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 12)
-    }
+    }*/
     next()
 })
 

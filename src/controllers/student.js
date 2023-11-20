@@ -3,6 +3,8 @@ const Application = require('../models/application')
 const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
 const {trainingSchema} = require('./../models/schema/student-info')
+const jwt = require('jsonwebtoken')
+require("dotenv").config();
 
 exports.studentSignUp = async(req, res)=>{
     const { name, email, password, mobile } = req.body;
@@ -14,9 +16,17 @@ exports.studentSignUp = async(req, res)=>{
     if (StudentExist) {
         return res.status(422).json({ Error: "Student exist" });
     }
-    const student = new Student(req.body);
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+    const student = new Student({
+      name: name.trim(),
+      email: email.trim(),
+      password: passwordHash,
+      mobile: mobile,
+      active: 1 //TODO: will change later
+    });
     const newStudent = await student.save();
-    res.status(200).json({ success: true, Student : newStudent });
+    res.status(200).json({ success: true});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -31,14 +41,17 @@ exports.studentSignIn = async(req, res)=>{
         const student = await Student.findOne({ email }).select("+password");
         if (student) {
           const isMatch = await bcrypt.compare(password, student.password);
-    
-          const token = await student.generateAuthToken();
+          //const token = await student.generateAuthToken();
     
           if (!isMatch) {
             console.log("password not match");
             res.status(400).json({ error: "invailid login details" });
           } else {
             console.log("user is logged in");
+            const token = jwt.sign({ 
+                id: student._id, 
+                email: student.email }, 
+                process.env.JWT_SECRET);
             res.status(200).json({ message: "login sucessfull", user : student, token });
           }
         } else {
