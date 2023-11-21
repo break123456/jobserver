@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
+
 const {trainingSchema, experienceSchema, educationSchema, projectSchema} = require('./schema/student-info')
 
 // Base user schema

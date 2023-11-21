@@ -14,8 +14,11 @@ exports.employerSignUp = async (req, res) => {
     const employeEmail = await Employer.findOne({ email: email });
     const employeMobile = await Employer.findOne({ mobile: mobile });
 
-    if (employeEmail || employeMobile) {
+    if (employeEmail) {
       return res.status(422).json({ Error: "account exist" });
+    }
+    if (employeMobile) {
+      return res.status(422).json({ Error: "mobile already exist" });
     }
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);

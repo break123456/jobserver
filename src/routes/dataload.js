@@ -1,6 +1,6 @@
 const express = require('express');
 const readline = require('readline');
-const {GSkill, GPreference} = require('../models/globaldata')
+const {GSkill, GPreference, GCity} = require('../models/globaldata')
 const fs = require('fs');
 const path = require('path')
 
@@ -64,6 +64,36 @@ globalLoadRouter.get('/preferences', async(req, res) => {
 	    });
 	  console.log('Finished reading file.');
 	});
+
+	return res.status(200).json({success:true});
+
+});
+
+globalLoadRouter.get('/cities', async(req, res) => {
+	let filepath = path.join(__dirname, '../datafiles/cities.json');
+	//return res.status(200).json({path: filepath});
+	// Read file line
+	const rawData = fs.readFileSync(filepath);
+	const jsonData = JSON.parse(rawData);
+	let cityObjs = [];
+	
+	for(const lObj of jsonData)
+	{
+		/*
+		cityObjs.push({
+			city: lObj.name.trim(),
+			state: lObj.state.trim(),
+			name: lObj.name.trim()+ ","+ lObj.state.trim()
+		});*/
+		const lCity = new GCity({
+			city: lObj.name.trim(),
+			state: lObj.state.trim(),
+			name: lObj.name.trim()+ ","+ lObj.state.trim()
+		});
+		await lCity.save();
+	}
+	await GCity.insertMany(cityObjs)
+	console.log('Finished adding cities');
 
 	return res.status(200).json({success:true});
 
