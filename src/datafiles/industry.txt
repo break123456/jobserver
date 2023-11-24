@@ -1,0 +1,56 @@
+Accounting/Finance
+Advertising/Marketing
+Agriculture/Dairy
+Airline/Aviation
+Animation
+Architecture/Interior Design
+Automobile
+Banking
+Biotechnology
+BPO
+Chemicals/Paints
+Construction/Procurement
+Consulting
+Courier/Shipping/Transportation
+Defence
+E-commerce
+Education/Teaching/Training
+Electrical
+Electronics/Semiconductors
+Events services
+Export/Import
+Facility Management
+Fertilizers/Pesticides
+FMCG
+Food/Beverages
+Furniture
+Gaming
+Glass
+Hardware
+Hospitals/Healthcare/Medical
+Hotels/Restaurant
+Insurance
+IT/Technology
+KPO/Research
+Legal
+Luxury goods/Jewellery/Accessories
+Media/Entertainment
+Mining/Metals/Steel
+Networking
+Oil and Gas/Power/Energy
+Other
+Paper
+Pharma
+Plastics/ Rubber
+Printing/Packaging
+Public Relations (PR)
+Railways
+Real Estate/Property
+Recruitment
+Retail
+Security/Law enforcement
+Social services
+Telecom
+Textiles/Garments/Fashion
+Travel/Tourism
+Wellness/Fitness/Sports/Beauty

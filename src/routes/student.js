@@ -5,10 +5,10 @@ const {verifyStudentToken} = require('../middleware/authorization')
 const studentRouter = express.Router();
 studentRouter.post('/register', student.studentSignUp);
 studentRouter.post('/login', student.studentSignIn);
+studentRouter.get('/details', verifyStudentToken, student.getDetails);
 
-studentRouter.get('/allstudents', student.getAllStudents);
+//studentRouter.get('/allstudents', student.getAllStudents);
 studentRouter.patch('/:id', verifyStudentToken, student.updateStudentbyId);
-studentRouter.get('/:id', verifyStudentToken, student.getStudentById);
 studentRouter.delete('/:id', verifyStudentToken, student.deleteStudentById);
 
 studentRouter.get('/preferences/:id', student.getStudentPreferenceById)

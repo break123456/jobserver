@@ -115,7 +115,8 @@ exports.updateCompanyDetails = async (req, res)=>{
 
 exports.addPost = async (req, res) => {
   try {
-    const { id, title, skills, workModel, workTime, numOpening, duration, startDate, responsiblity, stipend, locations } = req.body;
+    const id = req.user.id;
+    const { title, skills, workModel, workTime, numOpening, duration, startDate, responsiblity, stipend, locations } = req.body;
     const newPost = new Post({
       title,
       slug: strUtil.createSlug(title),
@@ -152,6 +153,19 @@ function queryTxtRecords(domain) {
       }
     });
   });
+}
+
+exports.getStudentById = async (req, res)=>{
+  try {
+    const student = await Student.findById(req.params.id);
+    if(student ){
+      res.status(200).json(student);
+    }else{
+      res.status(404).json({success : false, message : "Student not found"})
+    }
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
 }
 
 exports.verifyDomain = async(req, res) => {

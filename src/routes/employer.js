@@ -9,6 +9,6 @@ employeeRouter.get('/details', verifyEmployerToken, employer.employerDetails);
 employeeRouter.patch('/company/update', verifyEmployerToken, employer.updateCompanyDetails);
 employeeRouter.post('/post/add', verifyEmployerToken, employer.addPost);
 employeeRouter.post('/verify-domain', verifyEmployerToken, employer.verifyDomain);
-
+employeeRouter.get('/:id', verifyEmployerToken, employer.getStudentById);
 
 module.exports = employeeRouter;

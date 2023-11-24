@@ -73,9 +73,9 @@ exports.getAllStudents = async (req, res)=>{
   }
 }
 
-exports.getStudentById = async (req, res)=>{
+exports.getDetails = async (req, res)=>{
   try {
-    const student = await Student.findById(req.params.id);
+    const student = await Student.findById(req.user.id);
     if(student ){
       res.status(200).json(student);
     }else{
@@ -84,8 +84,6 @@ exports.getStudentById = async (req, res)=>{
   } catch (error) {
     res.status(404).json({message: error.message});
   }
-  
-
 }
 
 exports.deleteStudentById = async (req, res)=>{
@@ -99,10 +97,9 @@ exports.deleteStudentById = async (req, res)=>{
   }
 }
 
-
 exports.updateStudentbyId = async (req, res)=>{
     try {
-        const id = req.params.id;
+        const id = req.user.id;
         console.log(id);
         const body = req.body;
         const newStudent = await Student.findByIdAndUpdate(id, body);
@@ -119,7 +116,7 @@ exports.updateStudentbyId = async (req, res)=>{
 
 exports.getStudentPreferenceById = async (req, res)=>{
     try {
-        const id = req.params.id;
+        const id = req.user.id;
         const myPref = await Student.findById(id);
         console.log(myPref);
         if(myPref){
@@ -135,7 +132,8 @@ exports.getStudentPreferenceById = async (req, res)=>{
 
 exports.addTraining = async(req,res) => {
   try {
-    const { id, title, company, workMode, startDate, endDate, description } = req.body;
+    const id = req.user.id;
+    const { title, company, workMode, startDate, endDate, description } = req.body;
 
     const student = await Student.findById(id);
 
@@ -159,7 +157,6 @@ exports.addTraining = async(req,res) => {
     res.status(500).json({error: error.message});
   }
 }
-
 
 exports.getTrainingAll = async(req,res) => {
   try {
