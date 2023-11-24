@@ -23,6 +23,7 @@ exports.studentSignUp = async(req, res)=>{
       email: email.trim(),
       password: passwordHash,
       mobile: mobile,
+      role: 'student',
       active: 1 //TODO: will change later
     });
     const newStudent = await student.save();

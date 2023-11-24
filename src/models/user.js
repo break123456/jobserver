@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
 
 const {trainingSchema, experienceSchema, educationSchema, projectSchema} = require('./schema/student-info')
+const companySchema = require('./schema/company-info')
 
 // Base user schema
 const userSchema = new mongoose.Schema({
@@ -31,9 +32,11 @@ const userSchema = new mongoose.Schema({
     image: { 
         type: String, 
     },    
-    // role: { 
-    //     type: String, 
-    // },    
+    role: { 
+        type: String, 
+        enum : ["student", "employer", "admin"],
+        default: 'student'
+    },    
     active:{
         type: Boolean,
         default: 1
@@ -77,12 +80,10 @@ const studentSchema = new mongoose.Schema({
 });
 
 const employerSchema = new mongoose.Schema({
-    company: { 
-        type: String, 
-    },
-    slug: {
-        type: String,
-        lowercase : true
+    company: companySchema,
+    isApproved: { //once approved can't edit company name
+        type: Boolean,
+        default: false
     }
     
 });

@@ -27,5 +27,5 @@ exports.filterPost = async (req, res) => {
       console.log("error: ", error);
       res.status(401).json({ error: error.message, msg: "Post filter failed" })
     }
-  }
+}
   

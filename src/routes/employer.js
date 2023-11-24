@@ -1,12 +1,14 @@
 const express = require('express');
-const { employerSignUp, employerLogin, addPost, filterPost, getPost, verifyDomain } = require('../controllers/employer');
+const employer = require('../controllers/employer');
 const {verifyEmployerToken} = require('../middleware/authorization')
 
 const employeeRouter = express.Router();
-employeeRouter.post('/register', employerSignUp);
-employeeRouter.post('/login', employerLogin);
-employeeRouter.post('/post/add', verifyEmployerToken, addPost);
-employeeRouter.post('/verify-domain', verifyEmployerToken, verifyDomain);
+employeeRouter.post('/register', employer.employerSignUp);
+employeeRouter.post('/login', employer.employerLogin);
+employeeRouter.get('/details', verifyEmployerToken, employer.employerDetails);
+employeeRouter.patch('/company/update', verifyEmployerToken, employer.updateCompanyDetails);
+employeeRouter.post('/post/add', verifyEmployerToken, employer.addPost);
+employeeRouter.post('/verify-domain', verifyEmployerToken, employer.verifyDomain);
 
 
 module.exports = employeeRouter;

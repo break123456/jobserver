@@ -27,6 +27,7 @@ exports.employerSignUp = async (req, res) => {
       email: email.trim(),
       password: passwordHash,
       mobile: mobile,
+      role: 'employer',
       active: 1 //TODO: will change later
     });
     const newEmployer = await employer.save();
@@ -43,6 +44,7 @@ exports.employerLogin = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ error: "fill proper details" });
     }
+    console.log("email:" +email + " password:" + password);
     const employer = await Employer.findOne({ email }).select("+password");
     if (employer) {
       const isMatch = await bcrypt.compare(password, employer.password);
@@ -62,6 +64,52 @@ exports.employerLogin = async (req, res) => {
     }
   } catch (error) {
     res.status(404).json({ message: error.message });
+  }
+}
+
+exports.employerDetails = async (req, res)=>{
+  try {
+    const employer = await Employer.findById(req.user.id);
+    if(employer ){
+      res.status(200).json({success: true, employer : employer});
+    }else{
+      res.status(404).json({success : false, message : "Student not found"})
+    }
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
+}
+
+exports.updateCompanyDetails = async (req, res)=>{
+  try {
+      const id = req.user.id;
+      console.log(id);
+      const employer = await Employer.findById(id);
+      if(!employer ){
+        return res.status(404).json({success : false, message : "Employer not found"})
+      }
+      const {name, details, numEmployee, address, industry, url} = req.body;
+      
+      if(employer.isApproved) 
+      {
+        name = employer.company.name;
+        url = employer.company.domain.url;
+      }
+      employer.company = {
+        details: details,
+        numEmployee : numEmployee,
+        address : address,
+        industry: industry,
+        name: name,
+        slug: strUtil.createSlug(name),
+        domain: {
+          url : url
+        }
+      };
+      await employer.save();
+      return res.status(200).json({sucess : true, messsage : "Company data updated successfully!"});
+  } catch (error) {
+      res.status(404).json({message: error.message});
   }
 }
 
