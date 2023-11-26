@@ -167,6 +167,17 @@ exports.getStudentById = async (req, res)=>{
     res.status(404).json({message: error.message});
   }
 }
+//get posts by this employer
+exports.getPosts = async (req, res)=>{
+  try {
+    const { id } = req.user.id;
+    let posts = await Post.find({ ownerId: id });
+    res.status(200).send({ posts: posts, msg: "success" })
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(401).json({ error: error.message, msg: "Post filter failed" })
+  }
+}
 
 exports.verifyDomain = async(req, res) => {
   const { domain, token } = req.body;

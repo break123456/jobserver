@@ -18,10 +18,44 @@ exports.getPost = async (req, res) => {
     }
 }
 
+// filter by skills, location, stipend, start date, duration
 exports.filterPost = async (req, res) => {
     try {
-      const { id } = req.query;
-      let posts = await Post.find({ ownerId: id });
+      const { skills, locations, workModel, startDate, maxDuration, minStipend } = req.query;
+      // Build the filter object based on the provided criteria
+      const filter = {};
+
+      if (skills) {
+        filter.skills = skills.split(',');
+      }
+
+      if (workModel) {
+        filter.workModel = workModel;
+      }
+
+      if (locations) {
+        // If locations is a single value, convert it to an array
+        filter.locations = locations.split(',');
+      }
+
+      //start Date
+      if(startDate) {
+        filter.startDate.$gte = startDate;
+      }
+      //max  duration
+      if (maxDuration) {
+        filter.duration = {};
+        filter.duration.$lte = parseInt(maxDuration, 10);      
+      }
+
+      //min stiend
+      if (minStipend) {
+        filter.stipend = {};
+        filter.stipend.$gte = parseInt(minStipend, 10);      
+      }
+
+      // Query the database with the constructed filter
+      const posts = await Post.find(filter);
       res.status(200).send({ posts: posts, msg: "success" })
     } catch (error) {
       console.log("error: ", error);

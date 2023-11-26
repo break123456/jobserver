@@ -8,6 +8,7 @@ employeeRouter.post('/login', employer.employerLogin);
 employeeRouter.get('/details', verifyEmployerToken, employer.employerDetails);
 employeeRouter.patch('/company/update', verifyEmployerToken, employer.updateCompanyDetails);
 employeeRouter.post('/post/add', verifyEmployerToken, employer.addPost);
+employeeRouter.get('/posts', verifyEmployerToken, employer.getPosts);
 employeeRouter.post('/verify-domain', verifyEmployerToken, employer.verifyDomain);
 employeeRouter.get('/:id', verifyEmployerToken, employer.getStudentById);
 
