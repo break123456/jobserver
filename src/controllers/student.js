@@ -376,7 +376,8 @@ exports.addPreference = async(req,res) => {
 
 exports.applyPost = async(req, res) => {
   try {
-    const { id, postid } = req.body;
+    const id = req.user.id;
+    const {postid } = req.body;
 
     const student = await Student.findById(id);
 
@@ -384,6 +385,15 @@ exports.applyPost = async(req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    //add check if post is already applied 
+    const alreadyAppliedState = await Application.find({
+      userId: id,
+      postId: postid
+    });
+
+    if(alreadyAppliedState) {
+      return res.status(409).json({sucess : true, messsage : "application already applied."});
+    }
     //check post also
     const entry = new Application({ userId: id, postId: postid});
     await entry.save();
@@ -396,16 +406,15 @@ exports.applyPost = async(req, res) => {
 //will return all applied data for an user
 exports.allAppliedPosts  = async(req, res) => {
   try {
-    const { id } = req.body;
+    const id = req.user.id;
 
     const student = await Student.findById(id);
 
     if (!student) {
       return res.status(404).json({ error: 'User not found' });
     }
-
     //check post also
-    const applications = await Application.find({ userId: id});
+    const applications = await Application.find({ userId: id}).populate('postId').exec();
     return res.status(200).json({sucess : true, applications : applications});
   } catch(error) {
     res.status(500).json({error: error.message});

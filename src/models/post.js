@@ -79,7 +79,7 @@ const PostSchema = new mongoose.Schema(
     ownerId: { //employer id
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "user",
+      ref: "Employer",
     },
     isApproved: {
       type: Boolean,

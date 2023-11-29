@@ -27,5 +27,6 @@ studentRouter.post('/project/add', verifyStudentToken, student.addProject)
 studentRouter.post('/additional/add', verifyStudentToken, student.addAdditional) //extra accomplishment, extra curriculum 
 studentRouter.post('/preference/add', verifyStudentToken, student.addPreference)
 studentRouter.post('/post/apply', verifyStudentToken, student.applyPost)
+studentRouter.get('/post/applied', verifyStudentToken, student.allAppliedPosts)
 
 module.exports = studentRouter;

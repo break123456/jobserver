@@ -5,12 +5,12 @@ const ApplicationSchema = new mongoose.Schema(
     userId: { //user id
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'user'
+      ref: 'Student'
     },
     postId: { //post id
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "post",
+      ref: "Post",
     },
     state :{
       type : String,
