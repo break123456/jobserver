@@ -78,4 +78,14 @@ const projectSchema = new mongoose.Schema({
     timestamps: true
 });
 
-module.exports = {trainingSchema, experienceSchema, educationSchema, projectSchema};
+const additionalSchema = new mongoose.Schema({
+    details: {
+        type: String,
+        trim: true
+    }
+},
+{
+    timestamps: true
+});
+
+module.exports = {trainingSchema, experienceSchema, educationSchema, projectSchema, additionalSchema};

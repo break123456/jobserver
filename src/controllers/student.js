@@ -158,11 +158,35 @@ exports.addTraining = async(req,res) => {
   }
 }
 
+exports.deleteTraining = async(req, res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id;
+
+    console.log("delete training id:" + itemid);
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Filter out the experience to be deleted
+    student.training = student.training.filter(exp => exp._id.toString() !== itemid);
+
+    // Save the updated user
+    await student.save();
+    
+    return res.status(200).json({sucess : true, messsage : "Training deleted."});
+  } catch(error) {
+    return res.status(500).json({error: error.message});
+  }
+}
+
 exports.getTrainingAll = async(req,res) => {
   try {
-    const { userid } = req.query;
-    console.log("userid:" + userid);
-    const student = await Student.findById(userid);
+    const id = req.user.id;
+    const student = await Student.findById(id);
     //return all trainings
     return res.status(200).json({sucess : true, trainings: student.training});
   } catch(error) {
@@ -210,6 +234,27 @@ exports.addExperience = async(req,res) => {
     return res.status(200).json({sucess : true, messsage : "Experience added."});
   } catch(error) {
     res.status(500).json({error: error.message});
+  }
+}
+
+exports.deleteExperience = async(req, res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Filter out the experience to be deleted
+    student.experience = student.experience.filter(exp => exp._id.toString() !== itemid);
+    // Save the updated user
+    await student.save();
+    
+    return res.status(200).json({sucess : true, messsage : "Experience deleted."});
+  } catch(error) {
+    return res.status(500).json({error: error.message});
   }
 }
 
@@ -267,6 +312,27 @@ exports.addEducation = async(req,res) => {
   }
 }
 
+exports.deleteEducation = async(req, res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Filter out the experience to be deleted
+    student.education = student.education.filter(exp => exp._id.toString() !== itemid);
+    // Save the updated user
+    await student.save();
+    
+    return res.status(200).json({sucess : true, messsage : "Education deleted."});
+  } catch(error) {
+    return res.status(500).json({error: error.message});
+  }
+}
+
 exports.getEducationAll = async(req,res) => {
   try {
     const { userid } = req.query;
@@ -312,6 +378,27 @@ exports.addSkill = async(req,res) => {
   }
 }
 
+exports.deleteSkill = async(req, res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Filter out the experience to be deleted
+    student.skills = student.skills.filter(exp => exp !== itemid);
+    // Save the updated user
+    await student.save();
+    
+    return res.status(200).json({sucess : true, messsage : "Skill deleted."});
+  } catch(error) {
+    return res.status(500).json({error: error.message});
+  }
+}
+
 exports.addProject = async(req,res) => {
   try {
     const { id, title, startDate, endDate, link } = req.body;
@@ -336,9 +423,31 @@ exports.addProject = async(req,res) => {
   }
 }
 
+exports.deleteProject = async(req, res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Filter out the experience to be deleted
+    student.projects = student.projects.filter(exp => exp._id.toString() !== itemid);
+    // Save the updated user
+    await student.save();
+    
+    return res.status(200).json({sucess : true, messsage : "Project deleted."});
+  } catch(error) {
+    return res.status(500).json({error: error.message});
+  }
+}
+
 exports.addAdditional = async(req,res) => {
   try {
-    const { id, details } = req.body;
+    const { details } = req.body;
+    const id = req.user.id;
 
     const student = await Student.findById(id);
 
@@ -346,14 +455,35 @@ exports.addAdditional = async(req,res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    if(student.additionals == undefined)
-      student.additionals = [];
-
-    student.additionals.push(details);
+    let entry = {
+      details
+    };
+    student.additionals.push(entry);
     await student.save();
     return res.status(200).json({sucess : true, messsage : "Additional added."});
   } catch(error) {
     res.status(500).json({error: error.message});
+  }
+}
+
+exports.deleteAdditional = async(req, res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Filter out the experience to be deleted
+    student.additionals = student.additionals.filter(exp => exp._id.toString() !== itemid);
+    // Save the updated user
+    await student.save();
+    
+    return res.status(200).json({sucess : true, messsage : "Additional deleted."});
+  } catch(error) {
+    return res.status(500).json({error: error.message});
   }
 }
 
@@ -374,10 +504,31 @@ exports.addPreference = async(req,res) => {
   }
 }
 
+exports.deletePreference = async(req, res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Filter out the experience to be deleted
+    student.preferences = student.preferences.filter(exp => exp !== itemid);
+    // Save the updated user
+    await student.save();
+    
+    return res.status(200).json({sucess : true, messsage : "Preferences deleted."});
+  } catch(error) {
+    return res.status(500).json({error: error.message});
+  }
+}
+
 exports.applyPost = async(req, res) => {
   try {
     const id = req.user.id;
-    const {postid } = req.body;
+    const {postid} = req.body;
 
     const student = await Student.findById(id);
 
@@ -386,11 +537,12 @@ exports.applyPost = async(req, res) => {
     }
 
     //add check if post is already applied 
-    const alreadyAppliedState = await Application.find({
+    const alreadyAppliedState = await Application.findOne({
       userId: id,
       postId: postid
     });
 
+    console.log ("alreadyAppliedState: "  + alreadyAppliedState);
     if(alreadyAppliedState) {
       return res.status(409).json({sucess : true, messsage : "application already applied."});
     }

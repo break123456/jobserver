@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
 
-const {trainingSchema, experienceSchema, educationSchema, projectSchema} = require('./schema/student-info')
+const {trainingSchema, experienceSchema, educationSchema, projectSchema, additionalSchema} = require('./schema/student-info')
 const companySchema = require('./schema/company-info')
 
 // Base user schema
@@ -73,10 +73,7 @@ const studentSchema = new mongoose.Schema({
     education: [educationSchema],
     training: [trainingSchema],
     projects: [projectSchema],
-    additionals : [{
-        type: String,
-        trim: true
-    }]
+    additionals : [additionalSchema]
 });
 
 const employerSchema = new mongoose.Schema({
