@@ -158,6 +158,43 @@ exports.addTraining = async(req,res) => {
   }
 }
 
+exports.editTraining = async(req,res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id; 
+    
+    const { title, company, workMode, startDate, endDate, description } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Find the index of the training entry to be edited
+    const itemIndex = student.training.findIndex(t => t._id.toString() === itemid);
+
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: 'Training not found for the user' });
+    }
+
+    student.training[itemIndex] = {
+      _id: itemid,
+      title: title,
+      company,
+      workMode,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      description
+    };
+
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Training saved."});
+  } catch(error) {
+    return res.status(500).json({error: error.message});
+  }
+}
+
 exports.deleteTraining = async(req, res) => {
   try {
     const id = req.user.id;
@@ -237,6 +274,40 @@ exports.addExperience = async(req,res) => {
   }
 }
 
+exports.editExperience = async(req,res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id; 
+    
+    const { profile, company, workMode, startDate, endDate, description } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Find the index of the training entry to be edited
+    const itemIndex = student.experience.findIndex(t => t._id.toString() === itemid);
+
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: 'Experience not found for the user' });
+    }
+
+    student.experience[itemIndex] = {
+      _id: itemid,
+      profile: profile,
+      company,
+      workMode,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      description
+    };
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Experience updated."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
 exports.deleteExperience = async(req, res) => {
   try {
     const id = req.user.id;
@@ -272,7 +343,8 @@ exports.getExperienceAll = async(req,res) => {
 
 exports.getExperience = async(req,res) => {
   try {
-    const { id, userid } = req.query;
+    const userid = req.user.id;
+    const { id } = req.query;
     const student = await Student.findById(userid);
     if (!student) {
       return res.status(404).json({ error: 'User not found' });
@@ -288,7 +360,8 @@ exports.getExperience = async(req,res) => {
 
 exports.addEducation = async(req,res) => {
   try {
-    const { id, school, percentage, startDate, endDate, degreeType } = req.body;
+    const id = req.user.id;
+    const { school, percentage, startDate, endDate, degreeType } = req.body;
 
     const student = await Student.findById(id);
 
@@ -312,6 +385,36 @@ exports.addEducation = async(req,res) => {
   }
 }
 
+exports.editEducation = async(req,res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id;
+    const { school, percentage, startDate, endDate, degreeType } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Find the index of the education entry to be edited
+    const itemIndex = student.education.findIndex(t => t._id.toString() === itemid);
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: 'Education not found for the user' });
+    }
+    student.education[itemIndex] = {
+      school,
+      percentage,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      degreeType
+    };
+
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Education updated."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
 exports.deleteEducation = async(req, res) => {
   try {
     const id = req.user.id;
@@ -401,7 +504,8 @@ exports.deleteSkill = async(req, res) => {
 
 exports.addProject = async(req,res) => {
   try {
-    const { id, title, startDate, endDate, link } = req.body;
+    const id = req.user.id;
+    const { title, startDate, endDate, link } = req.body;
 
     const student = await Student.findById(id);
 
@@ -418,6 +522,38 @@ exports.addProject = async(req,res) => {
     student.projects.push(entry);
     await student.save();
     return res.status(200).json({sucess : true, messsage : "Project added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.editProject = async(req,res) => {
+  try {
+    const id = req.user.id;
+    const itemid = req.params.id;
+    const {title, startDate, endDate, link } = req.body;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+     // Find the index of the education entry to be edited
+     const itemIndex = student.projects.findIndex(t => t._id.toString() === itemid);
+     if (itemIndex === -1) {
+       return res.status(404).json({ error: 'Project not found for the user' });
+     }
+
+    student.projects[itemIndex] = {
+      _id: itemid,
+      title,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      link
+    };
+
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Project updated."});
   } catch(error) {
     res.status(500).json({error: error.message});
   }
@@ -456,6 +592,34 @@ exports.addAdditional = async(req,res) => {
     }
 
     let entry = {
+      details
+    };
+    student.additionals.push(entry);
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Additional added."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.editAdditional = async(req,res) => {
+  try {
+    const { details } = req.body;
+    const id = req.user.id;
+    const itemid = req.params.id;
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Find the index of the education entry to be edited
+    const itemIndex = student.additionals.findIndex(t => t._id.toString() === itemid);
+    if (itemIndex === -1) {
+      return res.status(404).json({ error: 'Education not found for the user' });
+    }
+    student.additionals[itemIndex] = {
+      _id: itemid,
       details
     };
     student.additionals.push(entry);
