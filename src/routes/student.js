@@ -39,6 +39,7 @@ studentRouter.delete('/additional/:id', verifyStudentToken, student.deleteAdditi
 studentRouter.post('/preference/add', verifyStudentToken, student.addPreference)
 studentRouter.delete('/preference/:id', verifyStudentToken, student.deletePreference)
 studentRouter.post('/post/apply', verifyStudentToken, student.applyPost)
+studentRouter.post('/post/unapply', verifyStudentToken, student.unApplyPost)
 studentRouter.get('/post/applied', verifyStudentToken, student.allAppliedPosts)
 
 module.exports = studentRouter;

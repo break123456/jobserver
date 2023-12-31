@@ -85,13 +85,23 @@ const PostSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    numViews :{
+    stats : {
+      view :{
+          type: Number,
+          default: 0,
+      },
+      application: {
         type: Number,
         default: 0,
-    },
-    numApplication: {
-      type: Number,
-      default: 0,
+      },
+      uninterested: {
+        type: Number,
+        default: 0,
+      },
+      hired: {
+        type: Number,
+        default: 0,
+      },
     },
     status : {
       type : String,

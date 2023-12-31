@@ -699,7 +699,10 @@ exports.applyPost = async(req, res) => {
     if (!student) {
       return res.status(404).json({ error: 'User not found' });
     }
-
+    const postObj = await Post.findById(postid);
+    if(!postObj) {
+      return res.status(409).json({sucess : true, messsage : "Invalid post."});
+    }
     //add check if post is already applied 
     const alreadyAppliedState = await Application.findOne({
       userId: id,
@@ -713,12 +716,51 @@ exports.applyPost = async(req, res) => {
     //check post also
     const entry = new Application({ userId: id, postId: postid});
     await entry.save();
-    return res.status(200).json({sucess : true, messsage : "application added."});
+    //increment count on the post
+    postObj.stats.application += 1;
+    await postObj.save();
+    return res.status(200).json({sucess : true, messsage : "application applied."});
   } catch(error) {
     res.status(500).json({error: error.message});
   }
 }
 
+exports.unApplyPost = async(req, res) => {
+  try {
+    //if applied post state change to anyother thing, student can't withdraw
+    const id = req.user.id;
+    const {postid} = req.body;
+
+    const postObj = await Post.findById(postid);
+    if(!postObj) {
+      return res.status(409).json({sucess : true, messsage : "Invalid post."});
+    }
+    //add check if post is already applied 
+    const alreadyAppliedState = await Application.findOne({
+      userId: id,
+      postId: postid
+    });
+    if(!alreadyAppliedState) {
+      return res.status(409).json({sucess : true, messsage : "application not applied."});
+    }
+    //if applied post state change to anyother thing, student can't withdraw
+    console.log ("alreadyAppliedState: "  + alreadyAppliedState);
+    if(alreadyAppliedState.state != "pending") {
+      return res.status(409).json({sucess : true, messsage : "application can't be withdrawn."});
+    }
+    
+    await alreadyAppliedState.remove(); // delete post application
+    //check post also
+    const entry = new Application({ userId: id, postId: postid});
+    await entry.save();
+    //increment count on the post
+    postObj.stats.application -= 1;
+    await postObj.save();
+    return res.status(200).json({sucess : true, messsage : "application removed."});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
 //will return all applied data for an user
 exports.allAppliedPosts  = async(req, res) => {
   try {

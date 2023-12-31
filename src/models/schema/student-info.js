@@ -11,7 +11,7 @@ const trainingSchema = new mongoose.Schema({
     },
     workMode: {
         type: String,
-        enum: ["remote", "office"]
+        enum: ["remote", "office", "hybrid"]
     },
     startDate: Date,
     endDate : Date,
@@ -35,7 +35,7 @@ const experienceSchema = new mongoose.Schema({
     },
     workMode: {
         type: String,
-        enum: ["remote", "office"]
+        enum: ["remote", "office", "hybrid"]
     },
     startDate: Date,
     endDate : Date,
