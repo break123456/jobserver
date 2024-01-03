@@ -484,7 +484,7 @@ exports.addSkill = async(req,res) => {
 exports.deleteSkill = async(req, res) => {
   try {
     const id = req.user.id;
-    const itemid = req.params.id;
+    const itemid = req.query.name;
 
     const student = await Student.findById(id);
 
@@ -671,7 +671,7 @@ exports.addPreference = async(req,res) => {
 exports.deletePreference = async(req, res) => {
   try {
     const id = req.user.id;
-    const itemid = req.params.id;
+    const itemid = req.query.name;
 
     const student = await Student.findById(id);
 
@@ -761,6 +761,7 @@ exports.unApplyPost = async(req, res) => {
     res.status(500).json({error: error.message});
   }
 }
+
 //will return all applied data for an user
 exports.allAppliedPosts  = async(req, res) => {
   try {
