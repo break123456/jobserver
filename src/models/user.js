@@ -61,10 +61,11 @@ const studentSchema = new mongoose.Schema({
     location: {
         type : String,
     },
-    preferences : {
-        type : Array,
-        default : [],
-    },
+    preferences : [{
+        type: String,
+        lowercase: true,
+        trim: true
+    }],
     workMode : {
         type : String,
         enum: ["office", "remote", "both"],

@@ -653,16 +653,21 @@ exports.deleteAdditional = async(req, res) => {
 
 exports.addPreference = async(req,res) => {
   try {
-    const { id, preference } = req.body;
-
+    const id = req.user.id;
+    const {  preference } = req.body;
+    if(preference == undefined) {
+      return res.status(404).json({ error: 'Input not found' });
+    }
     const student = await Student.findById(id);
 
     if (!student) {
       return res.status(404).json({ error: 'User not found' });
     }
-    student.preferences.push(preference);
+    //first clear all exisiting preferences then fill from server
+    student.preferences = preference;
     await student.save();
-    return res.status(200).json({sucess : true, messsage : "preference added."});
+    console.log("stduent:" + student);
+    return res.status(200).json({sucess : true, messsage : "preference updated."});
   } catch(error) {
     res.status(500).json({error: error.message});
   }
