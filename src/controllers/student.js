@@ -1,5 +1,6 @@
 const { Student, User } = require("../models/user");
 const Application = require('../models/application')
+const Post = require('../models/post')
 const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
 const {trainingSchema} = require('./../models/schema/student-info')
@@ -777,8 +778,23 @@ exports.allAppliedPosts  = async(req, res) => {
     if (!student) {
       return res.status(404).json({ error: 'User not found' });
     }
-    //check post also
-    const applications = await Application.find({ userId: id}).populate('postId').exec();
+    let applications = [];
+    let {state} = req.query;
+    if(state == undefined)
+        state = "all";
+    if(state != "all" && state != "pending" &&
+        state != "rejected" && state != "shortlist" && 
+        state != "hired" && state != "nointerst")
+        return res.status(401).send({ msg: "invalid query" })
+    if(state == "all")
+    {
+      applications = await Application.find({ userId: id })
+                    .populate('postId').exec();
+    }
+    else {
+      applications = await Application.find({ userId: id, state: state })
+      .populate('postId').exec();
+    }
     return res.status(200).json({sucess : true, applications : applications});
   } catch(error) {
     res.status(500).json({error: error.message});

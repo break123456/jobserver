@@ -1,4 +1,5 @@
 const { Employer } = require("../models/user");
+const Application  = require("../models/application");
 const Post = require("../models/post");
 const bcrypt = require('bcryptjs');
 const strUtil = require('../helper/string-util')
@@ -176,6 +177,35 @@ exports.getPosts = async (req, res)=>{
   } catch (error) {
     console.log("error: ", error);
     res.status(401).json({ error: error.message, msg: "Post filter failed" })
+  }
+}
+
+exports.getPostApplications = async (req, res)=>{
+  try {
+    const id = req.user.id;
+    const { postid } = req.query;
+    let students = [];
+    let {state} = req.query;
+    if(state == undefined)
+        state = "all";
+    if(state != "all" && state != "pending" &&
+        state != "rejected" && state != "shortlist" && 
+        state != "hired" && state != "nointerst")
+        return res.status(401).send({ msg: "invalid query" })
+    if(state == "all")
+    {
+      students = await Application.find({ postId: postid })
+                    .populate('userId').exec();
+    }
+    else {
+      students = await Application.find({ postId: postid, state: state })
+      .populate('userId').exec();
+    }
+    //.populate({ path: 'userId', select: 'name education'}).exec();
+    return res.status(200).send({ students: students, msg: "success" })
+  } catch (error) {
+    console.log("error: ", error);
+    return res.status(401).json({ error: error.message, msg: "Post applications get failed" })
   }
 }
 
