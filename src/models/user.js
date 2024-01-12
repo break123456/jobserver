@@ -42,8 +42,15 @@ const userSchema = new mongoose.Schema({
         default: 1
     },
     status:{
-        type: Boolean,
-        default: 1
+        type: String,
+        default: 'pending',
+        enum : ["pending", "rejected", "active", "disabled"],
+    },
+    reason : {
+        type: String,
+        required : function (){
+            return (this.status == "rejected" || this.status == "disabled")
+        }
     },
     refId: { 
         type: String
@@ -82,7 +89,7 @@ const employerSchema = new mongoose.Schema({
     isApproved: { //once approved can't edit company name
         type: Boolean,
         default: false
-    }
+    },
     
 });
 
