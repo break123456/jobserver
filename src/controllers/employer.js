@@ -171,12 +171,12 @@ exports.getStudentById = async (req, res)=>{
 //get posts by this employer
 exports.getPosts = async (req, res)=>{
   try {
-    const { id } = req.user.id;
-    let posts = await Post.find({ ownerId: id });
+    const { id } = req.user;
+    let posts = await Post.find({ ownerId: id }).select('title stats status');
     res.status(200).send({ posts: posts, msg: "success" })
   } catch (error) {
     console.log("error: ", error);
-    res.status(401).json({ error: error.message, msg: "Post filter failed" })
+    res.status(401).json({ error: error.message, msg: "Post list failed" })
   }
 }
 

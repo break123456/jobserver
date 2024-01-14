@@ -1,10 +1,11 @@
-const { Student, User } = require("../models/user");
+const { Student, User, Employer } = require("../models/user");
 const Application = require('../models/application')
 const Post = require('../models/post')
 const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
 const {trainingSchema} = require('./../models/schema/student-info')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { post } = require("../models/schema/company-info");
 require("dotenv").config();
 
 exports.studentSignUp = async(req, res)=>{
@@ -789,7 +790,16 @@ exports.allAppliedPosts  = async(req, res) => {
     if(state == "all")
     {
       applications = await Application.find({ userId: id })
-                    .populate('postId').exec();
+                    .populate({
+                      path: 'postId',
+                      model: Post,
+                      select: 'title',
+                      populate: {
+                        path: 'ownerId',
+                        model: Employer,
+                        select: 'name'
+                      }
+                    }).exec();
     }
     else {
       applications = await Application.find({ userId: id, state: state })

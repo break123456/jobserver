@@ -1,4 +1,5 @@
 const { Employer } = require("../models/user");
+const Application = require("../models/application")
 const Post = require("../models/post");
 const strUtil = require('../helper/string-util')
 
@@ -11,7 +12,26 @@ exports.getPost = async (req, res) => {
         path: 'ownerId',
         model: Employer
       }).exec();
-      res.status(200).send({ post: post, msg: "success" })
+      let appliedStatus = "none";
+      console.log("getpost: post:" + post);
+      console.log("user:" + req.user);
+      if(req.user != undefined)
+      {
+        console.log("userdi:" + req.user.id);
+        //check user status for this post 
+        //add check if post is already applied 
+        const alreadyAppliedState = await Application.findOne({
+          userId: req.user.id,
+          postId: id
+        });
+
+        console.log ("alreadyAppliedState: "  + alreadyAppliedState);
+        if(alreadyAppliedState) {
+          appliedStatus = alreadyAppliedState.state;
+          return res.status(409).json({post : post, appliedStatus: appliedStatus, messsage : "application already applied."});
+        }
+      }
+      return res.status(200).send({ post: post, appliedStatus:appliedStatus, msg: "success" })
     } catch (error) {
       console.log("error: ", error);
       res.status(401).json({ error: error.message, msg: "Post get failed" })
