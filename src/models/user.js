@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
     },
     status:{
         type: String,
-        default: 'pending',
+        default: "pending",
         enum : ["pending", "rejected", "active", "disabled"],
     },
     reason : {
@@ -76,6 +76,10 @@ const studentSchema = new mongoose.Schema({
     workMode : {
         type : String,
         enum: ["office", "remote", "both"],
+    },
+    samples : { //github, other work links
+        type: Map,
+        of: String
     },
     experience: [experienceSchema],
     education: [educationSchema],

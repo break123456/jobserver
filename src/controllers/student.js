@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
 const {trainingSchema} = require('./../models/schema/student-info')
 const jwt = require('jsonwebtoken');
-const { post } = require("../models/schema/company-info");
 require("dotenv").config();
 
 exports.studentSignUp = async(req, res)=>{
@@ -468,7 +467,8 @@ exports.getEducation = async(req,res) => {
 
 exports.addSkill = async(req,res) => {
   try {
-    const { id, skill } = req.body;
+    const id = req.user.id;
+    const { skill } = req.body;
 
     const student = await Student.findById(id);
 
@@ -773,7 +773,6 @@ exports.unApplyPost = async(req, res) => {
 exports.allAppliedPosts  = async(req, res) => {
   try {
     const id = req.user.id;
-
     const student = await Student.findById(id);
 
     if (!student) {
@@ -793,19 +792,59 @@ exports.allAppliedPosts  = async(req, res) => {
                     .populate({
                       path: 'postId',
                       model: Post,
-                      select: 'title',
+                      select: 'title ownerId',
                       populate: {
                         path: 'ownerId',
                         model: Employer,
-                        select: 'name'
+                        select: '_id name'
                       }
                     }).exec();
     }
     else {
       applications = await Application.find({ userId: id, state: state })
-      .populate('postId').exec();
+      .populate({
+        path: 'postId',
+        model: Post,
+        select: 'title ownerId',
+        populate: {
+          path: 'ownerId',
+          model: Employer,
+          select: '_id name'
+        }
+      }).exec();
     }
     return res.status(200).json({sucess : true, applications : applications});
+  } catch(error) {
+    res.status(500).json({error: error.message});
+  }
+}
+
+exports.updateSamples = async(req,res) => {
+  try {
+    const id = req.user.id;
+    const { entries } = req.body;
+
+    console.log("entries:" + entries);
+
+    const student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if(student.samples != undefined) {
+      student.samples.clear();
+    }
+    
+    // Iterate over the array of entries and add them to yourMapField
+    entries.forEach(({ key, value }) => {
+      const trimmedKey = key.trim();
+      const trimmedVal = value.trim();
+      student.samples.set(trimmedKey, trimmedVal);
+    });
+
+    await student.save();
+    return res.status(200).json({sucess : true, messsage : "Samples updated."});
   } catch(error) {
     res.status(500).json({error: error.message});
   }

@@ -23,9 +23,12 @@ exports.preferences = async (req, res) => {
 exports.cities = async (req, res) => {
     try {
         const {filter} = req.query;
-        if(filter == undefined)
+        if(filter == undefined || filter == "none")
         {
-            return res.status(400).json({ error: "no filter text passed" });
+            const items = await GCity.find({}).select('name -_id');
+            return res.status(200).json({"success": true, cities: items});
+
+            //return res.status(400).json({ error: "no filter text passed" });
         }
         if(filter.length < 3)
         {

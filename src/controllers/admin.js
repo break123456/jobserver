@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const strUtil = require('../helper/string-util')
 const dns = require('dns');
 const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose')
 
 exports.adminSignUp = async (req, res) => {
   const { name, email, password, mobile } = req.body;
@@ -110,16 +111,23 @@ exports.getEmployerPosts = async(req, res) => {
 
 exports.updatePostState = async(req, res) => {
     try {
-        const { empid, postid, status } = req.query;
+        const { empid, postid, status } = req.body;
         const post = await Post.findById(postid);
         if(!post || (post.ownerId != empid))
         {
             return res.status(401).json({ error: error.message, msg: "Invalid post request" });
         }
-        res.status(200).send({ posts: posts, msg: "success" })
+        post.status = status;
+        console.log("before save call");
+        await post.save();
+        return res.status(200).send({msg: "success" })
     } catch (error) {
         console.log("error: ", error);
-        res.status(401).json({ error: error.message, msg: "Employer post filter failed" })
+        if (error instanceof mongoose.Error.ValidationError) {
+          res.status(401).json({ error: error.message });
+        } else {
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
 }
 

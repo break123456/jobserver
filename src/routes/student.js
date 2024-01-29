@@ -41,5 +41,7 @@ studentRouter.delete('/preference/del', verifyStudentToken, student.deletePrefer
 studentRouter.post('/post/apply', verifyStudentToken, student.applyPost)
 studentRouter.post('/post/unapply', verifyStudentToken, student.unApplyPost)
 studentRouter.get('/post/applied', verifyStudentToken, student.allAppliedPosts)
+studentRouter.post('/samples/update', verifyStudentToken, student.updateSamples)
+
 
 module.exports = studentRouter;
