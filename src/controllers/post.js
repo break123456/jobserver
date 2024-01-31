@@ -10,7 +10,8 @@ exports.getPost = async (req, res) => {
       console.log("get post:" + id)
       let post = await Post.findById(id).populate({
         path: 'ownerId',
-        model: Employer
+        model: Employer,
+        select: 'name description'
       }).exec();
       let appliedStatus = "none";
       console.log("getpost: post:" + post);

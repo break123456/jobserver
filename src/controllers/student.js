@@ -469,13 +469,15 @@ exports.addSkill = async(req,res) => {
   try {
     const id = req.user.id;
     const { skill } = req.body;
-
     const student = await Student.findById(id);
-
     if (!student) {
       return res.status(404).json({ error: 'User not found' });
     }
-    student.skills.push(skill);
+    skill.forEach((item) => {
+      console.log("name:" + item.name);
+      student.skills.push(item.name);
+    });
+    
     await student.save();
     return res.status(200).json({sucess : true, messsage : "Skill added."});
   } catch(error) {

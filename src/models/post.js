@@ -14,11 +14,11 @@ const PostSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
-    skills : {
-      type: Array,
+    skills : [{
+      type: String,
       required: true,
-      default: [],
-    },
+      trim: true
+    }],
     workModel: {
       type: String,
       enum : ["remote", "office"],

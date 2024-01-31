@@ -118,10 +118,18 @@ exports.addPost = async (req, res) => {
   try {
     const id = req.user.id;
     const { title, skills, workModel, workTime, numOpening, duration, startDate, responsiblity, stipend, locations } = req.body;
+    let postSkills = [];
+    let postLocs = [];
+    skills.forEach((item) => {
+      postSkills.push(item.name);
+    });
+    locations.forEach((item) =>{
+      postLocs.push(item.name);
+    });
     const newPost = new Post({
       title,
       slug: strUtil.createSlug(title),
-      skills,
+      skills: postSkills,
       workModel,
       workTime,
       numOpening,
@@ -129,12 +137,12 @@ exports.addPost = async (req, res) => {
       startDate: new Date(startDate),
       responsiblity,
       stipend,
-      locations,
+      locations: postLocs,
       ownerId: id
     });
     newPost.isApproved = true;
     await newPost.save();
-    res.status(200).send({ msg: "Post added successfully" })
+    return res.status(200).send({ msg: "Post added successfully" })
   } catch (error) {
     console.log("error: ", error);
     res.status(401).json({ error: error.message, msg: "Post addition failed" })
