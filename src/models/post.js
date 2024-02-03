@@ -105,9 +105,15 @@ const PostSchema = new mongoose.Schema(
     },
     status : {
       type : String,
-      enum : ["pending", "live", "closed"],
+      enum : ["pending", "live", "closed", "rejected"],
       default: "pending"
-    }
+    },
+    reason : {
+      type: String,
+      required : function () {
+          return (this.status == "rejected" || this.status == "closed")
+      }
+  },
   },
   {
     timestamps: true,

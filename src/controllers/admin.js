@@ -86,12 +86,13 @@ exports.getEmployers = async(req, res) => {
     try {
         let {state} = req.query;
         let employers = [];
-        if(state != undefined)
+        if(state == undefined || state == "all")
         {
-            employers = await Employer.find({status: state});
+          employers = await Employer.find({});
         } 
         else 
-            employers = await Employer.find({});
+          employers = await Employer.find({status: state});
+            
         return res.status(200).json({success: true, employers : employers});
       } catch (error) {
         return res.status(404).json({message: error.message});
@@ -111,13 +112,15 @@ exports.getEmployerPosts = async(req, res) => {
 
 exports.updatePostState = async(req, res) => {
     try {
-        const { empid, postid, status } = req.body;
+        const { empid, postid, status, reason } = req.body;
         const post = await Post.findById(postid);
         if(!post || (post.ownerId != empid))
         {
             return res.status(401).json({ error: error.message, msg: "Invalid post request" });
         }
         post.status = status;
+        if(reason != undefined)
+          post.reason = reason;
         console.log("before save call");
         await post.save();
         return res.status(200).send({msg: "success" })
