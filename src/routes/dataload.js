@@ -51,7 +51,8 @@ globalLoadRouter.get('/preferences', async(req, res) => {
 	lineReader.on('line', (line) => {
 	  prefObjs.push({name: line.trim()});
 	});
-
+	//first delete existing
+	await GPreference.deleteMany({});
 	lineReader.on('close', async() => {
 		GPreference.insertMany(prefObjs)
 	    .then((result) => {

@@ -8,19 +8,15 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 
 exports.adminSignUp = async (req, res) => {
-  const { name, email, password, mobile } = req.body;
-  if (!name || !email || !password || !mobile) {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password ) {
     return res.status(422).json({ Error: "Plz fill all the field properly.." });
   }
   try {
     const employeEmail = await Admin.findOne({ email: email });
-    const employeMobile = await Admin.findOne({ mobile: mobile });
 
     if (employeEmail) {
       return res.status(422).json({ Error: "account exist" });
-    }
-    if (employeMobile) {
-      return res.status(422).json({ Error: "mobile already exist" });
     }
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -28,7 +24,7 @@ exports.adminSignUp = async (req, res) => {
       name: name.trim(),
       email: email.trim(),
       password: passwordHash,
-      mobile: mobile,
+      mobile: "9999999999",
       role: 'admin',
       active: 1 //TODO: will change later
     });
@@ -97,6 +93,30 @@ exports.getEmployers = async(req, res) => {
       } catch (error) {
         return res.status(404).json({message: error.message});
     }
+}
+
+exports.updateEmployerState = async(req, res) => {
+  try {
+      const { empid, status, reason } = req.body;
+      const employer = await Employer.findById(empid);
+      if(!employer)
+      {
+          return res.status(401).json({ error: error.message, msg: "Invalid employer request" });
+      }
+      employer.status = status;
+      if(reason != undefined)
+        employer.reason = reason;
+      console.log("before save call");
+      await employer.save();
+      return res.status(200).send({msg: "success" })
+  } catch (error) {
+      console.log("error: ", error);
+      if (error instanceof mongoose.Error.ValidationError) {
+        res.status(401).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+  }
 }
 
 exports.getEmployerPosts = async(req, res) => {

@@ -11,6 +11,7 @@ exports.skills = async (req, res) => {
     }
 };
 
+//preference and industry are same
 exports.preferences = async (req, res) => {
     try {
         const items = await GPreference.find().select('name -_id');
