@@ -40,6 +40,7 @@ globalLoadRouter.get('/skills', async (req, res) => {
 
 globalLoadRouter.get('/preferences', async(req, res) => {
 	let filepath = path.join(__dirname, '../datafiles/preference.txt');
+	console.log("filepath:" + filepath);
 	//return res.status(200).json({path: filepath});
 	// Read file line by line and save to database
 	const lineReader = readline.createInterface({
@@ -48,13 +49,26 @@ globalLoadRouter.get('/preferences', async(req, res) => {
 
 	let prefObjs = [];
 
-	lineReader.on('line', (line) => {
+	/*lineReader.on('line', (line) => {
+	  console.log("line:" + line.trim());
 	  prefObjs.push({name: line.trim()});
-	});
-	//first delete existing
+	});*/
+	for await (const line of lineReader) {
+		// Each line in input.txt will be successively available here as `line`.
+		//console.log(`Line from file: ${line}`);
+		prefObjs.push({name: line.trim()});
+
+	}
 	await GPreference.deleteMany({});
+	await GPreference.insertMany(prefObjs)
+
+	//console.log("pushed objs:" + prefObjs);
+	//first delete existing
+	console.log("first preferences are cleared")
+
 	lineReader.on('close', async() => {
-		GPreference.insertMany(prefObjs)
+		console.log("close is called");
+		/*await GPreference.insertMany(prefObjs)
 	    .then((result) => {
 	      console.log('preference saved successfully:', result);
 	    })
@@ -63,6 +77,7 @@ globalLoadRouter.get('/preferences', async(req, res) => {
 		  return res.status(400).json({error:error.message});
 
 	    });
+		await GPreference.save();*/
 	  console.log('Finished reading file.');
 	});
 

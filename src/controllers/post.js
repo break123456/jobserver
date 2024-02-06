@@ -84,3 +84,25 @@ exports.filterPost = async (req, res) => {
     }
 }
   
+exports.landingPosts = async (req, res) => {
+  try {
+    if(req.user != undefined)
+    {
+      console.log("userdi:" + req.user.id);
+      //check user status for this post 
+      //add check if post is already applied 
+      const posts= await Post.find({})
+      .sort({ createdAt: -1 }) // Sort by createdAt field in descending order (latest first)
+      .limit(10); // Limit the results to 10 posts
+      return res.status(200).json({posts : posts,  messsage : ""});
+    }
+
+    const posts= await Post.find({})
+      .sort({ createdAt: -1 }) // Sort by createdAt field in descending order (latest first)
+      .limit(10); // Limit the results to 10 posts
+    return res.status(200).send({ posts: posts, msg: "success" })
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(401).json({ error: error.message, msg: "Post get failed" })
+  }
+}
