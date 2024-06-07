@@ -180,7 +180,13 @@ exports.getStudentById = async (req, res)=>{
 exports.getPosts = async (req, res)=>{
   try {
     const { id } = req.user;
-    let posts = await Post.find({ ownerId: id }).select('title stats status');
+    const { state } = req.query;
+    let posts = [];
+    if(status == undefined) {
+      posts = await Post.find({ ownerId: id }).select('title stats status');
+    } else {
+      posts = await Post.find({ ownerId: id, status: state }).select('title stats status');
+    }
     res.status(200).send({ posts: posts, msg: "success" })
   } catch (error) {
     console.log("error: ", error);

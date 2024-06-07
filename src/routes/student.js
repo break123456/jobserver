@@ -5,6 +5,7 @@ const {verifyStudentToken} = require('../middleware/authorization')
 const studentRouter = express.Router();
 studentRouter.post('/register', student.studentSignUp);
 studentRouter.post('/login', student.studentSignIn);
+studentRouter.post('/forgotpassword', student.forgotPassword);
 studentRouter.get('/details', verifyStudentToken, student.getDetails);
 
 //studentRouter.get('/allstudents', student.getAllStudents);

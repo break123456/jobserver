@@ -103,9 +103,9 @@ const PostSchema = new mongoose.Schema(
         default: 0,
       },
     },
-    status : {
+    status : { //live must be approved, live will come after approved 
       type : String,
-      enum : ["pending", "live", "closed", "rejected"],
+      enum : ["pending", "approved", "live", "closed", "rejected"],
       default: "pending"
     },
     reason : {

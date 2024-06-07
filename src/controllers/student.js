@@ -64,6 +64,22 @@ exports.studentSignIn = async(req, res)=>{
     }
 }
 
+exports.forgotPassword = async(req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: "fill proper details" });
+    }
+    const student = await Student.findOne({ email });
+    if (student) {
+      //send mail for password reset link
+    } else {
+      return res.status(200).json({ error: "Student error" });
+    }
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
+}
 
 exports.getAllStudents = async (req, res)=>{
   try {
