@@ -28,33 +28,7 @@ exports.filter = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-  
-  // Update the state of an application
-exports.updateState =  async (req, res) => {
-    try {
-        const { id, state } = req.body;
-        // Validate that the state is one of the allowed values
-        const allowedStates = ["pending", "rejected", "nointerest", "shortlist", "hired"];
-        if (!allowedStates.includes(state)) {
-            return res.status(400).json({ error: 'Invalid state value' });
-        }
-
-        const application = await Application.findByIdAndUpdate(
-            id,
-            { state },
-            { new: true } // Return the updated document
-        );
-
-        if (!application) {
-            return res.status(404).json({ error: 'Application not found' });
-        }
-
-        res.status(200).json({application: application});
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
+ 
 exports.getById = async(req, res) => {
     try {
         const { id } = req.params;

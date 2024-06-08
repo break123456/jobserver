@@ -106,7 +106,6 @@ exports.updateEmployerState = async(req, res) => {
       employer.status = status;
       if(reason != undefined)
         employer.reason = reason;
-      console.log("before save call");
       await employer.save();
       return res.status(200).send({msg: "success" })
   } catch (error) {
@@ -121,12 +120,17 @@ exports.updateEmployerState = async(req, res) => {
 
 exports.getEmployerPosts = async(req, res) => {
     try {
-        const { empid } = req.query;
-        let posts = await Post.find({ ownerId: empid });
-        res.status(200).send({ posts: posts, msg: "success" })
+        const { empid, state } = req.query;
+        let posts = [] ;
+        if(state == undefined || state == "all") {
+          posts = await Post.find({ ownerId: empid });
+        } else {
+          posts = await Post.find({ ownerId: empid, status: state });
+        }
+        return res.status(200).send({ posts: posts, msg: "success" })
     } catch (error) {
         console.log("error: ", error);
-        res.status(401).json({ error: error.message, msg: "Employer post filter failed" })
+        return res.status(401).json({ error: error.message, msg: "Employer post filter failed" })
     }
 }
 
@@ -139,9 +143,8 @@ exports.updatePostState = async(req, res) => {
             return res.status(401).json({ error: error.message, msg: "Invalid post request" });
         }
         post.status = status;
-        if(reason != undefined)
+        if(reason != undefined && reason != "")
           post.reason = reason;
-        console.log("before save call");
         await post.save();
         return res.status(200).send({msg: "success" })
     } catch (error) {
