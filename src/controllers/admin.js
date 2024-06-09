@@ -184,6 +184,22 @@ exports.getStudentById = async (req, res)=>{
     res.status(404).json({message: error.message});
   }
 }
+
+exports.getEmployerById = async (req, res)=>{
+  try {
+    const {id} = req.query;
+    console.log("emolyer id:" + id);
+    const employer = await Employer.findById(id);
+    if(employer ){
+      res.status(200).json({success: true, employer : employer});
+    }else{
+      res.status(404).json({success : false, message : "Employer not found"})
+    }
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
+}
+
 //get posts by this admin
 exports.getPosts = async (req, res)=>{
   try {

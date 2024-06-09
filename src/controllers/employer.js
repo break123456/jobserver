@@ -29,7 +29,8 @@ exports.employerSignUp = async (req, res) => {
       password: passwordHash,
       mobile: mobile,
       role: 'employer',
-      active: 1 //TODO: will change later
+      status: "pending",
+      active: 0 //TODO: will change later
     });
     const newEmployer = await employer.save();
 
@@ -53,6 +54,10 @@ exports.employerLogin = async (req, res) => {
         console.log("password not match");
         res.status(400).json({ error: "invailid login details" });
       } else {
+        //check status
+        if(employer.status == "pending") {
+          return res.status(202).json({ message: "Account is not active"});
+        }
         console.log("employer is logged in");
         const token = jwt.sign({ 
           id: employer._id, 
