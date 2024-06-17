@@ -220,7 +220,7 @@ exports.updateApplicationState =  async (req, res) => {
           return res.status(404).json({ error: 'Application not found' });
       }
 
-      res.status(200).json({application: application});
+      res.status(200).json({msg: "success"});
   } catch (error) {
       res.status(500).json({ error: error.message });
   }
@@ -228,27 +228,32 @@ exports.updateApplicationState =  async (req, res) => {
 
 exports.getPostApplications = async (req, res)=>{
   try {
+    console.log("called getPostApplications");
     const id = req.user.id;
-    const { postid } = req.query;
-    let students = [];
-    let {state} = req.query;
+    const { postid, state } = req.query;
+    let applications = [];
+    const post = await Post.findById(postid);
+    if(!post) {
+      res.status(202).send({ msg: "Invalid post" })
+    }
     if(state == undefined)
         state = "all";
     if(state != "all" && state != "pending" &&
         state != "rejected" && state != "shortlist" && 
-        state != "hired" && state != "nointerst")
+        state != "hired" && state != "nointerest")
         return res.status(401).send({ msg: "invalid query" })
     if(state == "all")
     {
-      students = await Application.find({ postId: postid })
+      applications = await Application.find({ postId: postid })
                     .populate('userId').exec();
     }
     else {
-      students = await Application.find({ postId: postid, state: state })
+      applications = await Application.find({ postId: postid, state: state })
       .populate('userId').exec();
     }
+
     //.populate({ path: 'userId', select: 'name education'}).exec();
-    return res.status(200).send({ students: students, msg: "success" })
+    return res.status(200).send({ post: post, applications: applications, msg: "success" })
   } catch (error) {
     console.log("error: ", error);
     return res.status(401).json({ error: error.message, msg: "Post applications get failed" })
