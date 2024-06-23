@@ -117,10 +117,8 @@ exports.deleteStudentById = async (req, res)=>{
 exports.updateStudentbyId = async (req, res)=>{
     try {
         const id = req.user.id;
-        console.log(id);
-        const body = req.body;
-        const newStudent = await Student.findByIdAndUpdate(id, body);
-        console.log(newStudent);
+        const userData = req.body.userData;
+        const newStudent = await Student.findByIdAndUpdate(id, userData, {new: true});
         if(newStudent){
             res.status(200).json({sucess : true, messsage : "student updated successfully...!"});
         }else{

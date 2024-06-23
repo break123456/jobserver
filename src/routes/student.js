@@ -7,6 +7,7 @@ studentRouter.post('/register', student.studentSignUp);
 studentRouter.post('/login', student.studentSignIn);
 studentRouter.post('/forgotpassword', student.forgotPassword);
 studentRouter.get('/details', verifyStudentToken, student.getDetails);
+studentRouter.patch('/profile/update', verifyStudentToken, student.updateStudentbyId);
 
 //studentRouter.get('/allstudents', student.getAllStudents);
 studentRouter.patch('/:id', verifyStudentToken, student.updateStudentbyId);

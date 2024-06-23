@@ -73,10 +73,22 @@ const studentSchema = new mongoose.Schema({
         lowercase: true,
         trim: true
     }],
+    gender : {
+        type : String,
+        enum: ["Male", "Female", "Other"],
+    },
+    profession : {
+        type : String,
+        enum: ["Fresher", "Student", "Professional"],
+    },
     workMode : {
         type : String,
-        enum: ["office", "remote", "both"],
+        enum: ["Office", "Remote", "Hybrid"],
     },
+    languages : [{
+        type: String,
+        trim: true
+    }],
     samples : { //github, other work links
         type: Map,
         of: String
