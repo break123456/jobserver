@@ -122,7 +122,7 @@ exports.updateCompanyDetails = async (req, res)=>{
 exports.addPost = async (req, res) => {
   try {
     const id = req.user.id;
-    const { title, skills, workModel, workTime, numOpening, duration, startDate, responsiblity, stipend, locations } = req.body;
+    const { title, skills, locations, workType, numOpening, duration, startDate, responsibility, stipend, perksState, ppo, questions, mobile} = req.body;
     let postSkills = [];
     let postLocs = [];
     skills.forEach((item) => {
@@ -135,14 +135,17 @@ exports.addPost = async (req, res) => {
       title,
       slug: strUtil.createSlug(title),
       skills: postSkills,
-      workModel,
-      workTime,
+      workModel: workType,
       numOpening,
       duration,
       startDate: new Date(startDate),
-      responsiblity,
+      responsibility,
       stipend,
       locations: postLocs,
+      questions: questions,
+      mobile,
+      perks: perksState,
+      ppo,
       ownerId: id
     });
     newPost.isApproved = true;

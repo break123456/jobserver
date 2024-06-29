@@ -21,13 +21,8 @@ const PostSchema = new mongoose.Schema(
     }],
     workModel: {
       type: String,
-      enum : ["remote", "office"],
+      enum : ["remote", "office", "hybrid"],
       default: 'remote' //other is office
-    },
-    workTime: {
-      type: String,
-      enum : ["full", "part"],
-      default: 'full' // part -> fulltime, parttime
     },
     locations : [{ //cities
       type: String
@@ -43,7 +38,7 @@ const PostSchema = new mongoose.Schema(
     startDate : {
       type : Date
     },
-    responsiblity: {
+    responsibility: {
       type: String,
       trim: true,
     },
@@ -56,7 +51,7 @@ const PostSchema = new mongoose.Schema(
         type: Boolean,
         default: true,
       },
-      recommend: {
+      lor: {
         type: Boolean,
         default: true,
       },
@@ -64,22 +59,27 @@ const PostSchema = new mongoose.Schema(
         type: Boolean,
         default: true,
       },
-      days5: {
+      fivedays: {
         type: Boolean,
         default: true,
-      },
-      freefood: {
-        type: Boolean,
-        default: true,
-      },
+      }
     }, 
+    mobile: { //other contact
+      type: String,
+      trim: true,
+    },
     questions: [{
-      type: String
+      type: String,
+      trim: true
     }],
     ownerId: { //employer id
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "Employer",
+    },
+    ppo: { //is ppo comes with internship
+      type: Boolean,
+      default: false,
     },
     isApproved: {
       type: Boolean,
