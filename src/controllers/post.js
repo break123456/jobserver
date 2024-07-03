@@ -29,7 +29,7 @@ exports.getPost = async (req, res) => {
         console.log ("alreadyAppliedState: "  + alreadyAppliedState);
         if(alreadyAppliedState) {
           appliedStatus = alreadyAppliedState.state;
-          return res.status(409).json({post : post, appliedStatus: appliedStatus, messsage : "application already applied."});
+          return res.status(200).json({post : post, appliedStatus: appliedStatus, messsage : "application already applied."});
         }
       }
       return res.status(200).send({ post: post, appliedStatus:appliedStatus, msg: "success" })

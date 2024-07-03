@@ -122,35 +122,59 @@ exports.updateCompanyDetails = async (req, res)=>{
 exports.addPost = async (req, res) => {
   try {
     const id = req.user.id;
-    const { title, skills, locations, workType, numOpening, duration, startDate, responsibility, stipend, perksState, ppo, questions, mobile} = req.body;
+    const { postId, title, skills, locations, workType, numOpening, duration, startDate, responsibility, stipend, perksState, ppo, questions, mobile } = req.body;
     let postSkills = [];
     let postLocs = [];
     skills.forEach((item) => {
       postSkills.push(item.name);
     });
-    locations.forEach((item) =>{
+    locations.forEach((item) => {
       postLocs.push(item.name);
     });
-    const newPost = new Post({
-      title,
-      slug: strUtil.createSlug(title),
-      skills: postSkills,
-      workModel: workType,
-      numOpening,
-      duration,
-      startDate: new Date(startDate),
-      responsibility,
-      stipend,
-      locations: postLocs,
-      questions: questions,
-      mobile,
-      perks: perksState,
-      ppo,
-      ownerId: id
-    });
-    newPost.isApproved = true;
-    await newPost.save();
-    return res.status(200).send({ msg: "Post added successfully" })
+    if (postId === "new") {
+      const newPost = new Post({
+        title,
+        slug: strUtil.createSlug(title),
+        skills: postSkills,
+        workModel: workType,
+        numOpening,
+        duration,
+        startDate: new Date(startDate),
+        responsibility,
+        stipend,
+        locations: postLocs,
+        questions: questions,
+        mobile,
+        perks: perksState,
+        ppo,
+        ownerId: id
+      });
+      newPost.isApproved = true;
+      await newPost.save();
+    } else {
+      await Post.findByIdAndUpdate(postId, {
+        title,
+        slug: strUtil.createSlug(title),
+        skills: postSkills,
+        workModel: workType,
+        numOpening,
+        duration,
+        startDate: new Date(startDate),
+        responsibility,
+        stipend,
+        locations: postLocs,
+        questions: questions,
+        mobile,
+        perks: perksState,
+        ppo,
+        ownerId: id
+      });
+    }
+    let msg = "Post added successfully";
+    if (postId !== "new") {
+      msg = "Post udpated successfullly";
+    }
+    return res.status(200).send({ msg: msg })
   } catch (error) {
     console.log("error: ", error);
     res.status(401).json({ error: error.message, msg: "Post addition failed" })
@@ -192,9 +216,9 @@ exports.getPosts = async (req, res)=>{
     console.log("getposts:" + state);
     let posts = [];
     if(state == undefined) {
-      posts = await Post.find({ ownerId: id }).select('title stats status');
+      posts = await Post.find({ ownerId: id }).select('title stats status').sort({ updatedAt: -1 });
     } else {
-      posts = await Post.find({ ownerId: id, status: state }).select('title stats status');
+      posts = await Post.find({ ownerId: id, status: state }).select('title stats status').sort({ updatedAt: -1 });
     }
     res.status(200).send({ posts: posts, msg: "success" })
   } catch (error) {

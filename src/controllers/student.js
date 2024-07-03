@@ -734,7 +734,7 @@ exports.applyPost = async(req, res) => {
 
     console.log ("alreadyAppliedState: "  + alreadyAppliedState);
     if(alreadyAppliedState) {
-      return res.status(409).json({sucess : true, messsage : "application already applied."});
+      return res.status(409).json({sucess : true, messsage : "application already applied.", appliedStatus: alreadyAppliedState.state});
     }
     //check post also
     const entry = new Application({ userId: id, postId: postid});
@@ -742,7 +742,7 @@ exports.applyPost = async(req, res) => {
     //increment count on the post
     postObj.stats.application += 1;
     await postObj.save();
-    return res.status(200).json({sucess : true, messsage : "application applied."});
+    return res.status(200).json({sucess : true, messsage : "application applied.", appliedStatus: "pending"});
   } catch(error) {
     res.status(500).json({error: error.message});
   }
