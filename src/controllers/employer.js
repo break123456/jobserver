@@ -4,7 +4,8 @@ const Post = require("../models/post");
 const bcrypt = require('bcryptjs');
 const strUtil = require('../helper/string-util')
 const dns = require('dns');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const Chatroom = require("../models/chatroom");
 
 exports.employerSignUp = async (req, res) => {
   const { name, email, password, mobile } = req.body;
@@ -86,6 +87,19 @@ exports.employerDetails = async (req, res)=>{
   }
 }
 
+exports.employerDetails = async (req, res)=>{
+  try {
+    const employer = await Employer.findById(req.user.id);
+    if(employer ){
+      const rooms = await Chatroom.find({empId:req.user.id});
+      res.status(200).json({success: true, rooms : rooms});
+    }else{
+      res.status(404).json({success : false, message : "Student not found"})
+    }
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
+}
 exports.updateCompanyDetails = async (req, res)=>{
   try {
       const id = req.user.id;
