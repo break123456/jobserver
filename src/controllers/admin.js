@@ -78,6 +78,24 @@ exports.adminDetails = async (req, res)=>{
   }
 }
 
+exports.getPosts = async(req, res) => {
+  try {
+      const {state} = req.query;
+      let posts = [];
+      console.log("admin state query:" + state);
+      if(state == undefined || state == "all")
+      {
+        posts = await Post.find({}).populate('ownerId').exec();
+      } 
+      else 
+        posts = await Post.find({status: state}).sort({ updatedAt: -1 }).populate('ownerId').exec();
+          
+      return res.status(200).json({success: true, posts : posts});
+    } catch (error) {
+      return res.status(404).json({message: error.message});
+  }
+}
+
 exports.getEmployers = async(req, res) => {
     try {
         let {state} = req.query;
@@ -136,9 +154,9 @@ exports.getEmployerPosts = async(req, res) => {
 
 exports.updatePostState = async(req, res) => {
     try {
-        const { empid, postid, status, reason } = req.body;
+        const { postid, status, reason } = req.body;
         const post = await Post.findById(postid);
-        if(!post || (post.ownerId != empid))
+        if(!post)
         {
             return res.status(401).json({ error: error.message, msg: "Invalid post request" });
         }
@@ -150,7 +168,7 @@ exports.updatePostState = async(req, res) => {
     } catch (error) {
         console.log("error: ", error);
         if (error instanceof mongoose.Error.ValidationError) {
-          res.status(401).json({ error: error.message });
+          res.status(401).json({ msg: error.message });
         } else {
           res.status(500).json({ error: 'Internal Server Error' });
         }
@@ -197,18 +215,6 @@ exports.getEmployerById = async (req, res)=>{
     }
   } catch (error) {
     res.status(404).json({message: error.message});
-  }
-}
-
-//get posts by this admin
-exports.getPosts = async (req, res)=>{
-  try {
-    const { id } = req.user.id;
-    let posts = await Post.find({ ownerId: id });
-    res.status(200).send({ posts: posts, msg: "success" })
-  } catch (error) {
-    console.log("error: ", error);
-    res.status(401).json({ error: error.message, msg: "Post filter failed" })
   }
 }
 

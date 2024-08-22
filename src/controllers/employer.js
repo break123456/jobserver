@@ -108,7 +108,7 @@ exports.updateCompanyDetails = async (req, res)=>{
       if(!employer ){
         return res.status(404).json({success : false, message : "Employer not found"})
       }
-      const {name, details, numEmployee, address, industry, url} = req.body;
+      const {name, description, numEmployee, address, industry, url} = req.body;
       
       if(employer.isApproved) 
       {
@@ -116,7 +116,7 @@ exports.updateCompanyDetails = async (req, res)=>{
         url = employer.company.domain.url;
       }
       employer.company = {
-        details: details,
+        description: description,
         numEmployee : numEmployee,
         address : address,
         industry: industry,

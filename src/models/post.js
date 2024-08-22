@@ -123,7 +123,7 @@ const PostSchema = new mongoose.Schema(
 // Pre-save hook to validate the status before saving
 PostSchema.pre('save', function (next) {
   console.log("pre save called");
-  if (!['pending', 'live', 'closed'].includes(this.status)) {
+  if (!["pending", "approved", "live", "closed", "rejected"].includes(this.status)) {
     console.log("pre status:" + this.status)
     return next(new Error('Avi Invalid status value'));
   }

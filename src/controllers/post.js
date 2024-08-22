@@ -11,7 +11,7 @@ exports.getPost = async (req, res) => {
       let post = await Post.findById(id).populate({
         path: 'ownerId',
         model: Employer,
-        select: 'name description'
+       // select: 'name description'
       }).exec();
       let appliedStatus = "none";
       console.log("getpost: post:" + post);
@@ -76,7 +76,10 @@ exports.filterPost = async (req, res) => {
       }
 
       // Query the database with the constructed filter
-      const posts = await Post.find(filter);
+      const posts = await Post.find(filter).populate({
+        path: 'ownerId',
+        model: Employer
+      }).sort({ createdAt: -1 });
       res.status(200).send({ posts: posts, msg: "success" })
     } catch (error) {
       console.log("error: ", error);
