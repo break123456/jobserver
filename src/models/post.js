@@ -111,6 +111,7 @@ const PostSchema = new mongoose.Schema(
     reason : {
       type: String,
       required : function () {
+          // (this.status == "rejected" || this.status == "closed")
           return (this.status == "rejected" || this.status == "closed")
       }
   },

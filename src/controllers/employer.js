@@ -230,9 +230,9 @@ exports.getPosts = async (req, res)=>{
     console.log("getposts:" + state);
     let posts = [];
     if(state == undefined) {
-      posts = await Post.find({ ownerId: id }).select('title stats status').sort({ updatedAt: -1 });
+      posts = await Post.find({ ownerId: id }).select('title stats status reason').sort({ updatedAt: -1 });
     } else {
-      posts = await Post.find({ ownerId: id, status: state }).select('title stats status').sort({ updatedAt: -1 });
+      posts = await Post.find({ ownerId: id, status: state }).select('title stats status reason').sort({ updatedAt: -1 });
     }
     res.status(200).send({ posts: posts, msg: "success" })
   } catch (error) {
@@ -298,6 +298,26 @@ exports.getPostApplications = async (req, res)=>{
   } catch (error) {
     console.log("error: ", error);
     return res.status(401).json({ error: error.message, msg: "Post applications get failed" })
+  }
+}
+
+exports.getPostApplicationsStatus = async (req, res)=>{
+  try {
+    const id = req.user.id;
+    const { postid } = req.query;
+    const post = await Post.findById(postid);
+    if(!post) {
+      res.status(202).send({ msg: "Invalid post" })
+    }
+    
+    const applications = await Application.find({ postId: postid }).select('state');
+   
+
+    //.populate({ path: 'userId', select: 'name education'}).exec();
+    return res.status(200).send({ post: post, applications: applications, msg: "success" })
+  } catch (error) {
+    console.log("error: ", error);
+    return res.status(401).json({ error: error.message, msg: "Post applications status get failed" })
   }
 }
 

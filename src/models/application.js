@@ -14,7 +14,7 @@ const ApplicationSchema = new mongoose.Schema(
     },
     state :{
       type : String,
-      enum : ["pending", "rejected", "nointerest", "shortlist", "hired" ],
+      enum : ["pending", "rejected", "shortlist", "hired" ],
       default: "pending"
     },
     answers : [String]

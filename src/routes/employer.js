@@ -15,6 +15,7 @@ employeeRouter.patch('/company/update', verifyEmployerToken, employer.updateComp
 employeeRouter.post('/post/add', verifyEmployerToken, employer.addPost);
 employeeRouter.patch('/post/application/state', verifyEmployerToken, employer.updateApplicationState);
 employeeRouter.get('/post/applications', verifyEmployerToken, employer.getPostApplications);
+employeeRouter.get('/post/applications-status', verifyEmployerToken, employer.getPostApplicationsStatus);
 employeeRouter.get('/posts', verifyEmployerToken, employer.getPosts);
 employeeRouter.post('/verify-domain', verifyEmployerToken, employer.verifyDomain);
 employeeRouter.get('/:id', verifyEmployerToken, employer.getStudentById);
