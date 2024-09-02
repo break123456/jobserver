@@ -54,11 +54,27 @@ const educationSchema = new mongoose.Schema({
         trim: true
     },
     percentage : Number,
-    startDate: Date,
-    endDate : Date,
-    degreeType: {
+    startYear: Number,
+    endYear: Number,
+    stream : {
+        type: String,
+        trim: true
+    },
+    board : {
+        type: String,
+        trim: true
+    },
+    degree: {
         type: String, //x,XII, graduation,
         enum : ["X", "XII", "Graduation"]
+    },
+    graduationType: {
+        type: String, //phd, bteach, post,
+        trim: true
+    },
+    state: {
+        type: String,
+        enum : ["Pursuing", "Completed"]
     }
 },
 {

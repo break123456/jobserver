@@ -376,8 +376,9 @@ exports.getExperience = async(req,res) => {
 exports.addEducation = async(req,res) => {
   try {
     const id = req.user.id;
-    const { school, percentage, startDate, endDate, degreeType } = req.body;
+    const { school, percentage, board, startYear, endYear, degree, graduationType, stream } = req.body;
 
+    console.log( school, percentage, board, startYear, endYear, degree, graduationType, stream );
     const student = await Student.findById(id);
 
     if (!student) {
@@ -387,9 +388,12 @@ exports.addEducation = async(req,res) => {
     let entry = {
       school,
       percentage,
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
-      degreeType
+      board,
+      startYear,
+      endYear,
+      degree,
+      graduationType,
+      stream
     };
     //await entry.save();
     student.education.push(entry);
@@ -453,7 +457,7 @@ exports.deleteEducation = async(req, res) => {
 
 exports.getEducationAll = async(req,res) => {
   try {
-    const { userid } = req.query;
+    const userid = req.user.id;
     console.log("userid:" + userid);
     const student = await Student.findById(userid);
     //return all educations
@@ -465,7 +469,8 @@ exports.getEducationAll = async(req,res) => {
 
 exports.getEducation = async(req,res) => {
   try {
-    const { id, userid } = req.query;
+    const { id } = req.query;
+    const userid = req.user.id;
     const student = await Student.findById(userid);
     if (!student) {
       return res.status(404).json({ error: 'User not found' });
@@ -840,7 +845,7 @@ exports.updateSamples = async(req,res) => {
     const id = req.user.id;
     const { entries } = req.body;
 
-    console.log("entries:" + entries);
+    console.log("entries:" + JSON.stringify(entries));
 
     const student = await Student.findById(id);
 
@@ -852,8 +857,9 @@ exports.updateSamples = async(req,res) => {
       student.samples.clear();
     }
     
+    student.samples = new Map();
     // Iterate over the array of entries and add them to yourMapField
-    entries.forEach(({ key, value }) => {
+    Object.entries(entries).forEach(([key, value ]) => {
       const trimmedKey = key.trim();
       const trimmedVal = value.trim();
       student.samples.set(trimmedKey, trimmedVal);
