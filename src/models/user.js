@@ -67,6 +67,7 @@ const studentSchema = new mongoose.Schema({
     }],
     location: {
         type : String,
+        trim: true
     },
     preferences : [{
         type: String,

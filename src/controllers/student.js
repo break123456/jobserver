@@ -117,7 +117,8 @@ exports.deleteStudentById = async (req, res)=>{
 exports.updateStudentbyId = async (req, res)=>{
     try {
         const id = req.user.id;
-        const userData = req.body.userData;
+        let userData = req.body.userData;
+        
         const newStudent = await Student.findByIdAndUpdate(id, userData, {new: true});
         if(newStudent){
             res.status(200).json({sucess : true, messsage : "student updated successfully...!"});
@@ -677,7 +678,7 @@ exports.deleteAdditional = async(req, res) => {
 exports.addPreference = async(req,res) => {
   try {
     const id = req.user.id;
-    const {  preference } = req.body;
+    const {  preference, skills } = req.body;
     if(preference == undefined) {
       return res.status(404).json({ error: 'Input not found' });
     }
@@ -688,6 +689,7 @@ exports.addPreference = async(req,res) => {
     }
     //first clear all exisiting preferences then fill from server
     student.preferences = preference;
+    student.skills = skills;
     await student.save();
     console.log("stduent:" + student);
     return res.status(200).json({sucess : true, messsage : "preference updated."});
