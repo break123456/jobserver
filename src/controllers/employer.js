@@ -241,6 +241,19 @@ exports.getPosts = async (req, res)=>{
   }
 }
 
+//get posts by this employer
+exports.getPostListForChat = async (req, res)=>{
+  try {
+    const { id } = req.user;
+    console.log("getPostListForChat:");
+    let posts =  await Post.find({ ownerId: id }).select('title').sort({ updatedAt: -1 }).limit(10);
+    res.status(200).send({ posts: posts, msg: "success" })
+  } catch (error) {
+    console.log("error: ", error);
+    res.status(401).json({ error: error.message, msg: "Post list failed" })
+  }
+}
+
 // Update the state of an application
 exports.updateApplicationState =  async (req, res) => {
   try {

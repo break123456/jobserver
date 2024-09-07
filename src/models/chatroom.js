@@ -20,7 +20,7 @@ const chatroomSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ['active', 'disable'],
+      enum: ['pending', 'active', 'disabled'], //pending to active if employer send first message
       default: 'active',
     },
   },

@@ -4,6 +4,8 @@ const connection = require('./databases/db')
 const passport = require('passport');
 const bodyParser = require('body-parser')
 const cors = require('cors');
+const http = require('http');
+const initSocket = require('./socket')
 const studentRouter = require('./routes/student');
 const userRouter = require('./routes/user');
 const employerRouter = require('./routes/employer');
@@ -16,6 +18,8 @@ const postRouter = require('./routes/post');
 dotenv.config({path : "../.env"});
 
 const app = express();
+const server = http.createServer(app);
+
 const PORT = process.env.PORT;
 app.use(bodyParser.json({extended: true}));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -38,6 +42,9 @@ app.get('/', function(req, res) {
     res.send("Hello world");
 });
 
+// Initialize Socket.IO by passing the HTTP server
+const io = initSocket(server);
+
 app.use('/api/user', userRouter);
 app.use('/api/student', studentRouter);
 app.use('/api/admin', adminRouter);
@@ -47,6 +54,6 @@ app.use('/api/data', globalDataRouter);
 app.use('/api/load', globalLoadRouter);
 app.use('/api/post', postRouter);
 
-app.listen(process.env.PORT | 4000, () => {
+server.listen(process.env.PORT | 4000, () => {
     console.log(`jobserver started at port ${PORT}`);
 });
