@@ -1,11 +1,12 @@
 const { Employer } = require("../models/user");
-const Application  = require("../models/application");
+const Application = require("../models/application");
 const Post = require("../models/post");
 const bcrypt = require('bcryptjs');
 const strUtil = require('../helper/string-util')
 const dns = require('dns');
 const jwt = require('jsonwebtoken');
 const Chatroom = require("../models/chatroom");
+const ChatMsg = require("../models/chatmsg");
 
 exports.employerSignUp = async (req, res) => {
   const { name, email, password, mobile } = req.body;
@@ -47,7 +48,7 @@ exports.employerLogin = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ error: "fill proper details" });
     }
-    console.log("email:" +email + " password:" + password);
+    console.log("email:" + email + " password:" + password);
     const employer = await Employer.findOne({ email }).select("+password");
     if (employer) {
       const isMatch = await bcrypt.compare(password, employer.password);
@@ -56,13 +57,14 @@ exports.employerLogin = async (req, res) => {
         res.status(400).json({ error: "invailid login details" });
       } else {
         //check status
-        if(employer.status == "pending") {
-          return res.status(202).json({ message: "Account is not active"});
+        if (employer.status == "pending") {
+          return res.status(202).json({ message: "Account is not active" });
         }
         console.log("employer is logged in");
-        const token = jwt.sign({ 
-          id: employer._id, 
-          email: employer.email }, 
+        const token = jwt.sign({
+          id: employer._id,
+          email: employer.email
+        },
           process.env.JWT_SECRET);
         res.status(200).json({ message: "login sucessfull", user: employer, token });
       }
@@ -74,62 +76,61 @@ exports.employerLogin = async (req, res) => {
   }
 }
 
-exports.employerDetails = async (req, res)=>{
+exports.employerDetails = async (req, res) => {
   try {
     const employer = await Employer.findById(req.user.id);
-    if(employer ){
-      res.status(200).json({success: true, employer : employer});
-    }else{
-      res.status(404).json({success : false, message : "Student not found"})
+    if (employer) {
+      res.status(200).json({ success: true, employer: employer });
+    } else {
+      res.status(404).json({ success: false, message: "Student not found" })
     }
   } catch (error) {
-    res.status(404).json({message: error.message});
+    res.status(404).json({ message: error.message });
   }
 }
 
-exports.employerDetails = async (req, res)=>{
+exports.employerDetails = async (req, res) => {
   try {
     const employer = await Employer.findById(req.user.id);
-    if(employer ){
-      const rooms = await Chatroom.find({empId:req.user.id});
-      res.status(200).json({success: true, rooms : rooms});
-    }else{
-      res.status(404).json({success : false, message : "Student not found"})
+    if (employer) {
+      const rooms = await Chatroom.find({ empId: req.user.id });
+      res.status(200).json({ success: true, rooms: rooms });
+    } else {
+      res.status(404).json({ success: false, message: "Student not found" })
     }
   } catch (error) {
-    res.status(404).json({message: error.message});
+    res.status(404).json({ message: error.message });
   }
 }
-exports.updateCompanyDetails = async (req, res)=>{
+exports.updateCompanyDetails = async (req, res) => {
   try {
-      const id = req.user.id;
-      console.log(id);
-      const employer = await Employer.findById(id);
-      if(!employer ){
-        return res.status(404).json({success : false, message : "Employer not found"})
+    const id = req.user.id;
+    console.log(id);
+    const employer = await Employer.findById(id);
+    if (!employer) {
+      return res.status(404).json({ success: false, message: "Employer not found" })
+    }
+    const { name, description, numEmployee, address, industry, url } = req.body;
+
+    if (employer.isApproved) {
+      name = employer.company.name;
+      url = employer.company.domain.url;
+    }
+    employer.company = {
+      description: description,
+      numEmployee: numEmployee,
+      address: address,
+      industry: industry,
+      name: name,
+      slug: strUtil.createSlug(name),
+      domain: {
+        url: url
       }
-      const {name, description, numEmployee, address, industry, url} = req.body;
-      
-      if(employer.isApproved) 
-      {
-        name = employer.company.name;
-        url = employer.company.domain.url;
-      }
-      employer.company = {
-        description: description,
-        numEmployee : numEmployee,
-        address : address,
-        industry: industry,
-        name: name,
-        slug: strUtil.createSlug(name),
-        domain: {
-          url : url
-        }
-      };
-      await employer.save();
-      return res.status(200).json({sucess : true, messsage : "Company data updated successfully!"});
+    };
+    await employer.save();
+    return res.status(200).json({ sucess: true, messsage: "Company data updated successfully!" });
   } catch (error) {
-      res.status(404).json({message: error.message});
+    res.status(404).json({ message: error.message });
   }
 }
 
@@ -210,26 +211,26 @@ function queryTxtRecords(domain) {
   });
 }
 
-exports.getStudentById = async (req, res)=>{
+exports.getStudentById = async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
-    if(student ){
+    if (student) {
       res.status(200).json(student);
-    }else{
-      res.status(404).json({success : false, message : "Student not found"})
+    } else {
+      res.status(404).json({ success: false, message: "Student not found" })
     }
   } catch (error) {
-    res.status(404).json({message: error.message});
+    res.status(404).json({ message: error.message });
   }
 }
 //get posts by this employer
-exports.getPosts = async (req, res)=>{
+exports.getPosts = async (req, res) => {
   try {
     const { id } = req.user;
     const { state } = req.query;
     console.log("getposts:" + state);
     let posts = [];
-    if(state == undefined) {
+    if (state == undefined) {
       posts = await Post.find({ ownerId: id }).select('title stats status reason').sort({ updatedAt: -1 });
     } else {
       posts = await Post.find({ ownerId: id, status: state }).select('title stats status reason').sort({ updatedAt: -1 });
@@ -242,11 +243,11 @@ exports.getPosts = async (req, res)=>{
 }
 
 //get posts by this employer
-exports.getPostListForChat = async (req, res)=>{
+exports.getPostListForChat = async (req, res) => {
   try {
     const { id } = req.user;
     console.log("getPostListForChat:");
-    let posts =  await Post.find({ ownerId: id }).select('title').sort({ updatedAt: -1 }).limit(10);
+    let posts = await Post.find({ ownerId: id }).select('title').sort({ updatedAt: -1 }).limit(10);
     res.status(200).send({ posts: posts, msg: "success" })
   } catch (error) {
     console.log("error: ", error);
@@ -254,56 +255,152 @@ exports.getPostListForChat = async (req, res)=>{
   }
 }
 
-// Update the state of an application
-exports.updateApplicationState =  async (req, res) => {
+exports.getRoomMessages = async(req, res) => {
   try {
-      const { id, state } = req.body;
-      // Validate that the state is one of the allowed values
-      const allowedStates = ["pending", "rejected", "nointerest", "shortlist", "hired"];
-      if (!allowedStates.includes(state)) {
-          return res.status(400).json({ error: 'Invalid state value' });
-      }
+    const {roomid} = req.query;
+    if(roomid == undefined) {
+      return res.status(401).json({ msg: "Invalid query" })
+    }
+    const room = await Chatroom.findById(roomid);
+    if(!room) {
+      return res.status(401).json({ msg: "Invalid room" })
+    }
+    const msgs = await ChatMsg.find({chatroomId: roomid});
+    console.log("msgs:"+ msgs);
+    return res.status(200).json({ messages: msgs, msg: "success" })
+  } catch(error) {
+    console.log("getRoomMessages error: ", error);
+    return res.status(401).json({ error: error.message, msg: "room messages failed" })
+  }
+}
 
-      const application = await Application.findByIdAndUpdate(
-          id,
-          { state },
-          { new: true } // Return the updated document
-      );
+exports.getRoomStudent = async(req, res) => {
+  try {
+    const {roomid} = req.query;
+    if(roomid == undefined) {
+      return res.status(401).json({ msg: "Invalid query" })
+    }
+    const room = await Chatroom.findById(roomid).populate('studentId').exec();
+    if(!room) {
+      return res.status(401).json({ msg: "Invalid room" })
+    }
+    return res.status(200).json({ student: room.studentId, msg: "success" })
 
-      if (!application) {
-          return res.status(404).json({ error: 'Application not found' });
-      }
+  } catch(error) {
 
-      res.status(200).json({msg: "success"});
+  }
+}
+
+exports.getActiveChatRooms = async (req, res) => {
+  try {
+    console.log("called getActiveChatRooms");
+    const id = req.user.id;
+    const { postid } = req.query;
+    let rooms = [];
+    if (postid == undefined || postid == "none") {
+      //send all chatrooms
+      rooms = await Chatroom.find({ empId: id })
+        .populate({
+          path: 'studentId',          // Populate userId with selected fields
+          select: 'name email' // Only fetch username and email
+        })
+        .populate({
+          path: 'postId',          // Populate postId with selected fields
+          select: 'title'          // Only fetch title of the post
+        }).exec();
+      return res.status(200).send({ rooms: rooms, msg: "success" });
+    } else {
+      //send all chatrooms
+      rooms = await Chatroom.find({ empId: id, postId: postid })
+        .populate({
+          path: 'userId',          // Populate userId with selected fields
+          select: 'username email' // Only fetch username and email
+        })
+        .populate({
+          path: 'postId',          // Populate postId with selected fields
+          select: 'title'          // Only fetch title of the post
+        }).exec();
+    }
+    console.log("rooms:" + rooms);
+    return res.status(200).send({ rooms: rooms, msg: "success" });
   } catch (error) {
-      res.status(500).json({ error: error.message });
+    console.log("error: ", error);
+    return res.status(401).json({ error: error.message, msg: "Active chatrooms get failed" })
+  }
+}
+
+exports.getPostApplicantsForChat = async (req, res) => {
+  try {
+    console.log("called getPostApplicantsForChat");
+    const id = req.user.id;
+    const { postid } = req.query;
+    if (postid === "none")
+      return res.status(200).send({ applicants: [], msg: "success" })
+    const post = await Post.findById(postid);
+    if (!post) {
+      res.status(202).send({ msg: "Invalid post" })
+    }
+    const applicants = await Application.find({ postId: postid })
+      .populate('userId').exec();
+
+
+    //.populate({ path: 'userId', select: 'name education'}).exec();
+    return res.status(200).send({ applicants: applicants, msg: "success" })
+  } catch (error) {
+    console.log("error: ", error);
+    return res.status(401).json({ error: error.message, msg: "Post applicants get failed" })
+  }
+}
+
+// Update the state of an application
+exports.updateApplicationState = async (req, res) => {
+  try {
+    const { id, state } = req.body;
+    // Validate that the state is one of the allowed values
+    const allowedStates = ["pending", "rejected", "nointerest", "shortlist", "hired"];
+    if (!allowedStates.includes(state)) {
+      return res.status(400).json({ error: 'Invalid state value' });
+    }
+
+    const application = await Application.findByIdAndUpdate(
+      id,
+      { state },
+      { new: true } // Return the updated document
+    );
+
+    if (!application) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+
+    res.status(200).json({ msg: "success" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.getPostApplications = async (req, res)=>{
+exports.getPostApplications = async (req, res) => {
   try {
     console.log("called getPostApplications");
     const id = req.user.id;
     const { postid, state } = req.query;
     let applications = [];
     const post = await Post.findById(postid);
-    if(!post) {
+    if (!post) {
       res.status(202).send({ msg: "Invalid post" })
     }
-    if(state == undefined)
-        state = "all";
-    if(state != "all" && state != "pending" &&
-        state != "rejected" && state != "shortlist" && 
-        state != "hired" && state != "nointerest")
-        return res.status(401).send({ msg: "invalid query" })
-    if(state == "all")
-    {
+    if (state == undefined)
+      state = "all";
+    if (state != "all" && state != "pending" &&
+      state != "rejected" && state != "shortlist" &&
+      state != "hired" && state != "nointerest")
+      return res.status(401).send({ msg: "invalid query" })
+    if (state == "all") {
       applications = await Application.find({ postId: postid })
-                    .populate('userId').exec();
+        .populate('userId').exec();
     }
     else {
       applications = await Application.find({ postId: postid, state: state })
-      .populate('userId').exec();
+        .populate('userId').exec();
     }
 
     //.populate({ path: 'userId', select: 'name education'}).exec();
@@ -314,17 +411,17 @@ exports.getPostApplications = async (req, res)=>{
   }
 }
 
-exports.getPostApplicationsStatus = async (req, res)=>{
+exports.getPostApplicationsStatus = async (req, res) => {
   try {
     const id = req.user.id;
     const { postid } = req.query;
     const post = await Post.findById(postid);
-    if(!post) {
+    if (!post) {
       res.status(202).send({ msg: "Invalid post" })
     }
-    
+
     const applications = await Application.find({ postId: postid }).select('state');
-   
+
 
     //.populate({ path: 'userId', select: 'name education'}).exec();
     return res.status(200).send({ post: post, applications: applications, msg: "success" })
@@ -334,22 +431,22 @@ exports.getPostApplicationsStatus = async (req, res)=>{
   }
 }
 
-exports.verifyDomain = async(req, res) => {
+exports.verifyDomain = async (req, res) => {
   const { domain, token } = req.body;
 
   try {
     // Use DNS to query the TXT records for the specified domain
     //const txtRecords = await queryTxtRecords(domain);
-    let txtRecords =  [];
-    dns.resolveTxt(domain, (err,  txtRecords) =>  {
-      if(err) {
-        console.log('TXT records failed: ' + err.message); 
-        return res.status(500).json({error: error.message});
+    let txtRecords = [];
+    dns.resolveTxt(domain, (err, txtRecords) => {
+      if (err) {
+        console.log('TXT records failed: ' + err.message);
+        return res.status(500).json({ error: error.message });
       } else {
-          console.log('TXT records: '+  txtRecords.flat()); 
+        console.log('TXT records: ' + txtRecords.flat());
       }
     });
-      
+
 
     // Check if the token is found in the TXT records
     // (txtRecords.includes(token) && token === txtRecords.flat()) 

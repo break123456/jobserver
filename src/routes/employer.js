@@ -17,7 +17,11 @@ employeeRouter.patch('/post/application/state', verifyEmployerToken, employer.up
 employeeRouter.get('/post/applications', verifyEmployerToken, employer.getPostApplications);
 employeeRouter.get('/post/applications-status', verifyEmployerToken, employer.getPostApplicationsStatus);
 employeeRouter.get('/posts', verifyEmployerToken, employer.getPosts);
-employeeRouter.get('/posts-for-chat', verifyEmployerToken, employer.getPostListForChat);
+employeeRouter.get('/chat/posts', verifyEmployerToken, employer.getPostListForChat);
+employeeRouter.get('/chat/applicants', verifyEmployerToken, employer.getPostApplicantsForChat);
+employeeRouter.get('/chat/rooms', verifyEmployerToken, employer.getActiveChatRooms);
+employeeRouter.get('/chat/student', verifyEmployerToken, employer.getRoomStudent);
+employeeRouter.get('/chat/messages', verifyEmployerToken, employer.getRoomMessages);
 employeeRouter.post('/verify-domain', verifyEmployerToken, employer.verifyDomain);
 employeeRouter.get('/:id', verifyEmployerToken, employer.getStudentById);
 
