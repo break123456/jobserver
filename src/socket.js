@@ -41,12 +41,20 @@ const initSocket = (server) => {
                 socket.emit('ERR_MSG', { error: 'Could not create room.' });
             }
         });
-
-        // Join a unique one-on-one chat room (room is based on chatroomId)
-        socket.on('JOIN_ROOM', async ({ chatroomId, empId, studentId }) => {
+        socket.on('LEAVE_ROOM', async ({chatroomId}) => {
             try {
+                socket.leave(chatroomId);
+            } catch (error) {
+                console.error('Error leaving  room:', error);
+                socket.emit('ERR_MSG', { type: 'LEAVE_ROOM', error: 'Could not leave room.' });
+            }
+        });
+        // Join a unique one-on-one chat room (room is based on chatroomId)
+        socket.on('JOIN_ROOM', async ({chatroomId}) => {
+            try {
+                console.log("JOIN_ROOM request rece:" + chatroomId);
                 // Ensure the chatroom exists and is valid
-                const chatroom = await Chatroom.findOne({ _id: chatroomId, empId, studentId });
+                const chatroom = await Chatroom.findById(chatroomId);
                 if (chatroom) {
                     //doesn't allow chat if room is disabled
                     if (chatroom.status === "disabled") {
@@ -54,10 +62,6 @@ const initSocket = (server) => {
                         return;
                     }
                     socket.join(chatroomId);
-                    //send messages 
-                    const messages = await ChatMsg.find({chatroomId:chatroomId});
-                    socket.emit('MESSAGES', {messages: messages});
-                    console.log(`User ${socket.id} joined room: ${chatroomId}`);
                 } else {
                     socket.emit('ERR_MSG', { type: "ROOM_INVALID", error: 'Invalid chatroom or access denied.' });
                 }
