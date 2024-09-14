@@ -44,6 +44,9 @@ studentRouter.post('/post/apply', verifyStudentToken, student.applyPost)
 studentRouter.post('/post/unapply', verifyStudentToken, student.unApplyPost)
 studentRouter.get('/post/applied', verifyStudentToken, student.allAppliedPosts)
 studentRouter.post('/samples/update', verifyStudentToken, student.updateSamples)
+studentRouter.get('/chat/rooms', verifyStudentToken, student.getActiveChatRooms);
+//studentRouter.get('/chat/employer', verifyStudentToken, student.getRoomEmployer);
+//studentRouter.get('/chat/messages', verifyStudentToken, student.getRoomMessages);
 
 
 module.exports = studentRouter;

@@ -266,7 +266,6 @@ exports.getRoomMessages = async(req, res) => {
       return res.status(401).json({ msg: "Invalid room" })
     }
     const msgs = await ChatMsg.find({chatroomId: roomid});
-    console.log("msgs:"+ msgs);
     return res.status(200).json({ messages: msgs, msg: "success" })
   } catch(error) {
     console.log("getRoomMessages error: ", error);

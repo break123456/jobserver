@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 const { ObjectId } = require('mongodb');
 const {trainingSchema} = require('./../models/schema/student-info')
 const jwt = require('jsonwebtoken');
+const Chatroom = require("../models/chatroom");
+const ChatMsg = require("../models/chatmsg");
 require("dotenv").config();
 
 exports.studentSignUp = async(req, res)=>{
@@ -871,5 +873,27 @@ exports.updateSamples = async(req,res) => {
     return res.status(200).json({sucess : true, messsage : "Samples updated."});
   } catch(error) {
     res.status(500).json({error: error.message});
+  }
+}
+
+exports.getActiveChatRooms = async (req, res) => {
+  try {
+    console.log("student called getActiveChatRooms");
+    const id = req.user.id;
+    let rooms = await Chatroom.find({ studentId: id })
+        .populate({
+          path: 'empId',          // Populate userId with selected fields
+          select: 'name email' // Only fetch username and email
+        })
+        .populate({
+          path: 'postId',          // Populate postId with selected fields
+          select: 'title'          // Only fetch title of the post
+        }).exec();
+      return res.status(200).send({ rooms: rooms, msg: "success" });
+    console.log("rooms:" + rooms);
+    return res.status(200).send({ rooms: rooms, msg: "success" });
+  } catch (error) {
+    console.log("error: ", error);
+    return res.status(401).json({ error: error.message, msg: "Active chatrooms get failed" })
   }
 }

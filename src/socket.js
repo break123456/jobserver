@@ -4,7 +4,13 @@ const ChatMsg = require('./models/chatmsg');
 
 // Function to initialize Socket.IO
 const initSocket = (server) => {
-    const io = socketIo(server);
+    const io = socketIo(server, {
+        cors: {
+            origin: "*", // This allows all origins, or you can specify the exact domain, e.g. "http://localhost:3000"
+            methods: ["GET", "POST"], // Specify the HTTP methods that are allowed
+        }
+    });
+    console.log("initsocker");
 
     // Handle Socket.IO connections for one-on-one chat
     io.on('connection', (socket) => {
@@ -43,7 +49,8 @@ const initSocket = (server) => {
         });
         socket.on('LEAVE_ROOM', async ({chatroomId}) => {
             try {
-                socket.leave(chatroomId);
+                if(chatroomId)
+                    socket.leave(chatroomId);
             } catch (error) {
                 console.error('Error leaving  room:', error);
                 socket.emit('ERR_MSG', { type: 'LEAVE_ROOM', error: 'Could not leave room.' });
@@ -72,7 +79,9 @@ const initSocket = (server) => {
         });
 
         // Listen for chat messages from employer or student
-        socket.on('SEND_MSG', async ({ chatroomId, sender, content, type }) => {
+        socket.on('SEND_MSG', async ({ messageId, chatroomId, sender, content, type }) => {
+            console.log("SEND_MSG", messageId, chatroomId, sender, content, type);
+
             try {
                 // Ensure the message is tied to a valid chatroom
                 const chatroom = await Chatroom.findById(chatroomId);
@@ -83,6 +92,7 @@ const initSocket = (server) => {
 
                 // Save the message to the database
                 const chatMessage = new ChatMsg({
+                    messageId,
                     chatroomId,
                     sender,
                     content,
@@ -91,7 +101,7 @@ const initSocket = (server) => {
                 await chatMessage.save();
 
                 // Emit the message to both employer and student in this one-on-one chatroom
-                io.to(chatroomId).emit('RECE_MSG', {
+                socket.to(chatroomId).emit('RECE_MSG', {
                     sender,
                     content,
                     type
