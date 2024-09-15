@@ -290,6 +290,36 @@ exports.getRoomStudent = async(req, res) => {
   }
 }
 
+exports.getChatRoom = async (req, res) => {
+  try {
+    console.log("called getChatRoom");
+    const id = req.user.id;
+    const { postid, studentid } = req.query;
+    let rooms = [];
+    if (postid == undefined || studentid == undefined) {
+      return res.status(401).json({ msg: "Invalid input" })
+    }
+      //send all chatrooms
+    const room = await Chatroom.findOne({ empId: id, postId: postid, studentId: studentid }).select('_id');
+    if(room) {
+      return res.status(200).send({ room: room, msg: "success" });
+    } else {
+      //create room
+      const roomData = new Chatroom ({
+        postId: postid,
+        empId: id,
+        studentId:studentid
+      });
+      await roomData.save();
+      return res.status(200).send({ roomid: roomData._id, msg: "success" });
+    }
+  } catch (error) {
+    console.log("error: ", error);
+    return res.status(401).json({ error: error.message, msg: "Active chatrooms get failed" })
+  }
+}
+
+
 exports.getActiveChatRooms = async (req, res) => {
   try {
     console.log("called getActiveChatRooms");

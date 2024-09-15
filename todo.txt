@@ -1,0 +1,1 @@
+1. companyId make more sense than empId, since we display company name in all places rather than emp id.

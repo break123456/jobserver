@@ -20,6 +20,7 @@ employeeRouter.get('/posts', verifyEmployerToken, employer.getPosts);
 employeeRouter.get('/chat/posts', verifyEmployerToken, employer.getPostListForChat);
 employeeRouter.get('/chat/applicants', verifyEmployerToken, employer.getPostApplicantsForChat);
 employeeRouter.get('/chat/rooms', verifyEmployerToken, employer.getActiveChatRooms);
+employeeRouter.get('/chat/room', verifyEmployerToken, employer.getChatRoom);
 employeeRouter.get('/chat/student', verifyEmployerToken, employer.getRoomStudent);
 employeeRouter.get('/chat/messages', verifyEmployerToken, employer.getRoomMessages);
 employeeRouter.post('/verify-domain', verifyEmployerToken, employer.verifyDomain);

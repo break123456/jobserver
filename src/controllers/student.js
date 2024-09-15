@@ -897,3 +897,38 @@ exports.getActiveChatRooms = async (req, res) => {
     return res.status(401).json({ error: error.message, msg: "Active chatrooms get failed" })
   }
 }
+
+exports.getRoomEmployer = async(req, res) => {
+  try {
+    const {roomid} = req.query;
+    if(roomid == undefined) {
+      return res.status(401).json({ msg: "Invalid query" })
+    }
+    const room = await Chatroom.findById(roomid).populate('empId').exec();
+    if(!room) {
+      return res.status(401).json({ msg: "Invalid room" })
+    }
+    return res.status(200).json({ employer: room.empId, msg: "success" })
+
+  } catch(error) {
+    console.log("getRoomEmployer error: ", error);
+  }
+}
+
+exports.getRoomMessages = async(req, res) => {
+  try {
+    const {roomid} = req.query;
+    if(roomid == undefined) {
+      return res.status(401).json({ msg: "Invalid query" })
+    }
+    const room = await Chatroom.findById(roomid);
+    if(!room) {
+      return res.status(401).json({ msg: "Invalid room" })
+    }
+    const msgs = await ChatMsg.find({chatroomId: roomid});
+    return res.status(200).json({ messages: msgs, msg: "success" })
+  } catch(error) {
+    console.log("getRoomMessages error: ", error);
+    return res.status(401).json({ error: error.message, msg: "room messages failed" })
+  }
+}
