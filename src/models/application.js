@@ -12,6 +12,14 @@ const ApplicationSchema = new mongoose.Schema(
       required: true,
       ref: "Post",
     },
+    coverLetter: {
+      type: String,
+      trim: true
+    },
+    availability: { //if no, store reason only
+      type: String,
+      trim: true
+    },
     state :{
       type : String,
       enum : ["pending", "rejected", "shortlist", "hired" ],

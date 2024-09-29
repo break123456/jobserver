@@ -724,7 +724,7 @@ exports.deletePreference = async(req, res) => {
 exports.applyPost = async(req, res) => {
   try {
     const id = req.user.id;
-    const {postid} = req.body;
+    const {postid, availability, coverLetter} = req.body;
 
     const student = await Student.findById(id);
 
@@ -746,7 +746,7 @@ exports.applyPost = async(req, res) => {
       return res.status(409).json({sucess : true, messsage : "application already applied.", appliedStatus: alreadyAppliedState.state});
     }
     //check post also
-    const entry = new Application({ userId: id, postId: postid});
+    const entry = new Application({ userId: id, postId: postid, availability, coverLetter});
     await entry.save();
     //increment count on the post
     postObj.stats.application += 1;
