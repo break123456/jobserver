@@ -5,6 +5,7 @@ const {checkStudentLoggedIn} = require('../middleware/authorization')
 const postRouter = express.Router();
 postRouter.get('/landing', checkStudentLoggedIn, post.landingPosts);
 postRouter.get('/filter', post.filterPost);
+postRouter.get('/details', checkStudentLoggedIn, post.getPostByTitle);
 postRouter.get('/:id', checkStudentLoggedIn, post.getPost);
 
 module.exports = postRouter;

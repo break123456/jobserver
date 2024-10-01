@@ -13,6 +13,7 @@ exports.createSlug = (str) => {
   if (typeof str === 'string') {
     str = str.replace(/[^a-zA-Z0-9]/g, '-');
     str = str.toLowerCase();
+    str += "-"+ Date.now()
   }
 
   return str;

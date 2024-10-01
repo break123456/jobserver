@@ -77,6 +77,15 @@ const PostSchema = new mongoose.Schema(
       required: true,
       ref: "Employer",
     },
+    cName: { //company name
+      type: String,
+      required: true,
+      trim: true
+    },
+    cLogo: { //company logo
+      type: String,
+      trim: true
+    },
     ppo: { //is ppo comes with internship
       type: Boolean,
       default: false,

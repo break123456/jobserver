@@ -26,7 +26,7 @@ exports.cities = async (req, res) => {
         const {filter} = req.query;
         if(filter == undefined || filter == "none")
         {
-            const items = await GCity.find({}).select('name -_id');
+            const items = await GCity.find({}).select('city -_id');
             return res.status(200).json({"success": true, cities: items});
 
             //return res.status(400).json({ error: "no filter text passed" });

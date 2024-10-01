@@ -1,0 +1,694 @@
+{
+    ".NET Development": [
+      ".NET",
+      "ASP.NET",
+      "C#.NET",
+      "C#",
+      "Visual Basic (VB)",
+      "Backend Development",
+      "Full Stack Development"
+    ],
+    "Accounts": [
+      "Accounting",
+      "Auditing",
+      "Financial literacy",
+      "Financial Modeling",
+      "Compensation management",
+      "Finance",
+      "Tally"
+    ],
+    "Acting": [
+      "Acting Audition",
+      "Acting technique",
+      "Voice-over artist",
+      "Voiceover"
+    ],
+    "Analytics": [
+      "Big Data Analytics",
+      "Data Analysis",
+      "Data Analytics",
+      "Data Science",
+      "Statistics",
+      "Statistical Modeling",
+      "SPSS",
+      "R Programming",
+      "Python"
+    ],
+    "Anchoring": [
+      "Anchoring",
+      "Public Speaking",
+      "Effective Communication"
+    ],
+    "Android App Development": [
+      "Android",
+      "Kotlin",
+      "Flutter",
+      "Java",
+      "Firebase",
+      "Google Cloud Computing",
+      "Mobile App Development"
+    ],
+    "Animation": [
+      "Animation",
+      "Autodesk Maya",
+      "Blender 3D",
+      "3ds Max",
+      "CLO3D",
+      "Autodesk SketchBook"
+    ],
+    "Architecture": [
+      "AutoCAD",
+      "BIM (Building Information Modeling)",
+      "Civil",
+      "Autodesk Revit",
+      "Autodesk Fusion 360"
+    ],
+    "Artificial Intelligence (AI)": [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Deep Learning",
+      "Data Science",
+      "Python",
+      "Neural Networks"
+    ],
+    "Audio Making/Editing": [
+      "Audio Editing",
+      "Adobe Audition",
+      "FL Studio",
+      "Ableton Live",
+      "Audacity"
+    ],
+    "Auditing": [
+      "Auditing",
+      "Financial Modeling",
+      "Finance",
+      "CA Articleship"
+    ],
+    "Backend Development": [
+      "Node.js",
+      "Java",
+      "Python",
+      "APIs",
+      "PostgreSQL",
+      "MongoDB",
+      "REST API"
+    ],
+    "Bank": [
+      "Finance",
+      "Auditing",
+      "Financial Modeling",
+      "Accounts"
+    ],
+    "Biology": [
+      "Biology",
+      "Molecular Biology Techniques",
+      "Next Generation Sequencing (NGS)",
+      "Bioinformatics",
+      "Biostatistics"
+    ],
+    "Blogging": [
+      "Blogging",
+      "Content Writing",
+      "Creative Writing",
+      "SEO",
+      "Digital Marketing"
+    ],
+    "Brand Management": [
+      "Branding",
+      "Business Development",
+      "Social Media Marketing",
+      "Marketing"
+    ],
+    "Business Development": [
+      "Sales",
+      "Marketing",
+      "Client interaction",
+      "Prospecting",
+      "Lead Generation"
+    ],
+    "MBA": [
+      "Business Development",
+      "Project Management",
+      "Market Research",
+      "Operations",
+      "Sales"
+    ],
+    "CA Articleship": [
+      "Accounting",
+      "Auditing",
+      "Chartered Accountancy (CA)",
+      "Taxation",
+      "Financial Modeling"
+    ],
+    "CAD Design": [
+      "AutoCAD",
+      "CAD",
+      "SolidWorks",
+      "Autodesk Inventor"
+    ],
+    "CS Articleship": [
+      "Corporate Law",
+      "Company Secretary (CS)",
+      "Compliance"
+    ],
+    "Campus Ambassador": [
+      "Sales",
+      "Marketing",
+      "Event Management"
+    ],
+    "Chartered Accountancy (CA)": [
+      "Auditing",
+      "Accounting",
+      "Financial Modeling",
+      "CA Articleship"
+    ],
+    "Chemical": [
+      "Chemistry",
+      "Chemical Engineering",
+      "Laboratory Skills",
+      "Process Optimization"
+    ],
+    "Cinematography": [
+      "Cinematography",
+      "Film Making",
+      "Video Editing",
+      "Adobe Premiere Pro",
+      "Final Cut Pro"
+    ],
+    "Civil": [
+      "Civil",
+      "AutoCAD",
+      "Structural Engineering",
+      "Surveying"
+    ],
+    "Client Servicing": [
+      "Customer Service",
+      "Client Relationship",
+      "Business Development"
+    ],
+    "Cloud Computing": [
+      "AWS",
+      "Microsoft Azure",
+      "Cloud Firestore",
+      "DevOps",
+      "Docker",
+      "Kubernetes"
+    ],
+    "Commerce": [
+      "Accounting",
+      "Auditing",
+      "Taxation",
+      "CA Articleship"
+    ],
+    "Company Secretary (CS)": [
+      "Company Secretary (CS)",
+      "Corporate Law",
+      "Compliance"
+    ],
+    "Computer Science": [
+      "Algorithms",
+      "Data Structures",
+      "Computer Networking",
+      "Database Management System (DBMS)",
+      "Programming"
+    ],
+    "Content Writing": [
+      "Content Writing",
+      "SEO",
+      "Blogging",
+      "Copywriting"
+    ],
+    "Copywriting": [
+      "Copywriting",
+      "Content Writing",
+      "Advertising"
+    ],
+    "Creative Design": [
+      "Adobe Photoshop",
+      "Adobe Illustrator",
+      "Sketch",
+      "Figma",
+      "UI/UX"
+    ],
+    "Creative Writing": [
+      "Creative Writing",
+      "Blogging",
+      "Storyboarding"
+    ],
+    "Customer Service": [
+      "Telecalling",
+      "Client Relationship",
+      "CRM"
+    ],
+    "Cyber Security": [
+      "Cybersecurity",
+      "Network Security",
+      "Penetration Testing",
+      "Ethical Hacking"
+    ],
+    "Data Entry": [
+      "Data Entry",
+      "Data Collection",
+      "Database Building"
+    ],
+    "Data Science": [
+      "Data Science",
+      "Python",
+      "R Programming",
+      "Machine Learning"
+    ],
+    "Database Building": [
+      "SQL",
+      "NoSQL",
+      "MongoDB",
+      "PostgreSQL"
+    ],
+    "Design": [
+      "Adobe Photoshop",
+      "CorelDRAW",
+      "Graphic Design",
+      "Autodesk SketchBook"
+    ],
+    "Dietetics/Nutrition": [
+      "Dietetics/Nutrition",
+      "Health"
+    ],
+    "Digital Marketing": [
+      "SEO",
+      "Google Analytics",
+      "Facebook Marketing",
+      "Instagram Marketing"
+    ],
+    "E-commerce": [
+      "E-commerce",
+      "Product Management",
+      "Sales"
+    ],
+    "Editorial": [
+      "Proofreading",
+      "Content Editing",
+      "Copywriting"
+    ],
+    "Electrical": [
+      "Electrical Engineering",
+      "Analog And Digital Circuits",
+      "PCB Design",
+      "Battery Management Systems"
+    ],
+    "Electronics": [
+      "Embedded Systems",
+      "Arduino",
+      "Circuit Design"
+    ],
+    "Embedded Systems": [
+      "Embedded Systems",
+      "FPGA",
+      "Verilog"
+    ],
+    "Engineering": [
+      "Engineering",
+      "Mechanical Engineering",
+      "Civil Engineering",
+      "Industrial and Production Engineering"
+    ],
+    "Engineering Design": [
+      "CAD",
+      "SolidWorks",
+      "Autodesk Inventor",
+      "PTC Creo"
+    ],
+    "Environmental Sciences": [
+      "Environmental Sciences",
+      "Sustainability",
+      "Ecology"
+    ],
+    "Event Management": [
+      "Event Management",
+      "Planning",
+      "Fundraising"
+    ],
+    "Facebook Marketing": [
+      "Facebook Marketing",
+      "Social Media Marketing",
+      "Digital Advertising"
+    ],
+    "Fashion Design": [
+      "Fashion Design",
+      "Pattern making",
+      "Draping"
+    ],
+    "Film Making": [
+      "Film Making",
+      "Cinematography",
+      "Video Editing",
+      "Adobe Premiere Pro"
+    ],
+    "Finance": [
+      "Financial Modeling",
+      "Auditing",
+      "Investment Banking",
+      "Accounts"
+    ],
+    "Flutter Development": [
+      "Flutter",
+      "Dart",
+      "Mobile App Development"
+    ],
+    "Front End Development": [
+      "HTML",
+      "CSS",
+      "React",
+      "JavaScript"
+    ],
+    "Full Stack Development": [
+      "Node.js",
+      "React",
+      "Angular",
+      "MongoDB"
+    ],
+    "Fundraising": [
+      "Fundraising",
+      "Event Management",
+      "Social Work"
+    ],
+    "Game Design": [
+      "Game Design",
+      "Unity 3D",
+      "Unreal Engine"
+    ],
+    "Game Development": [
+      "Unity 3D",
+      "C#",
+      "Game Design",
+      "Unreal Engine"
+    ],
+    "General Management": [
+      "Project Management",
+      "Operations",
+      "Team Leadership"
+    ],
+    "Graphic Design": [
+      "Adobe Photoshop",
+      "Adobe Illustrator",
+      "CorelDRAW",
+      "Figma"
+    ],
+    "Hospitality": [
+      "Hospitality",
+      "Event Management",
+      "Customer Service"
+    ],
+    "HR": [
+      "Recruitment",
+      "Talent Acquisition",
+      "HRIS"
+    ],
+    "Humanities": [
+      "Social Sciences",
+      "History",
+      "Psychology"
+    ],
+    "Industrial and Production Engineering": [
+      "Industrial Automation",
+      "Mechanical Engineering",
+      "CAD"
+    ],
+    "Information Technology": [
+      "Computer Networks",
+      "Cloud Computing",
+      "Programming",
+      "DevOps"
+    ],
+    "Interior Design": [
+      "Interior Design",
+      "AutoCAD",
+      "3D Rendering"
+    ],
+    "International": [
+      "International Relations",
+      "Business Development",
+      "Trade"
+    ],
+    "Javascript Development": [
+      "JavaScript",
+      "React",
+      "Node.js",
+      "Vue.js"
+    ],
+    "Journalism": [
+      "Journalism",
+      "News Writing",
+      "Editing"
+    ],
+    "Law": [
+      "Legal Research",
+      "Corporate Law",
+      "Intellectual Property Rights"
+    ],
+    "Legal Research": [
+      "Legal Research",
+      "Case Law Analysis",
+      "Corporate Law"
+    ],
+    "Machine Learning": [
+      "Machine Learning",
+      "Python",
+      "TensorFlow"
+    ],
+    "Market/Business Research": [
+      "Market Research",
+      "Data Analysis",
+      "Business Intelligence"
+    ],
+    "Marketing": [
+      "Digital Marketing",
+      "Sales",
+      "SEO"
+    ],
+    "Mechanical": [
+      "Mechanical Engineering",
+      "SolidWorks",
+      "3D CAD"
+    ],
+    "Media": [
+      "Video Production",
+      "Editing",
+      "News Writing"
+    ],
+    "Mobile App Development": [
+      "iOS",
+      "Android",
+      "React Native",
+      "Flutter"
+    ],
+    "Motion Graphics": [
+      "Adobe After Effects",
+      "3D Animation",
+      "Motion Graphics"
+    ],
+    "Music": [
+      "Music Production",
+      "Audio Editing",
+      "FL Studio"
+    ],
+    "NGO": [
+      "Social Work",
+      "Event Management",
+      "Fundraising"
+    ],
+    "Network Engineering": [
+      "Computer Networks",
+      "CCNA",
+      "Firewall Configuration"
+    ],
+    "Operations": [
+      "Operations Management",
+      "Logistics",
+      "Supply Chain Management"
+    ],
+    "PHP Development": [
+      "PHP",
+      "Laravel",
+      "MySQL"
+    ],
+    "Photography": [
+      "Photography",
+      "Photo Editing",
+      "Adobe Photoshop"
+    ],
+    "Physics": [
+      "Physics",
+      "Astrophysics",
+      "Theoretical Physics"
+    ],
+    "Product": [
+      "Product Management",
+      "UX Design",
+      "Market Research"
+    ],
+    "Programming": [
+      "Python",
+      "Java",
+      "C++"
+    ],
+    "Project Management": [
+      "Agile",
+      "Scrum",
+      "JIRA"
+    ],
+    "Proofreading": [
+      "Proofreading",
+      "Editing",
+      "Content Writing"
+    ],
+    "Psychology": [
+      "Psychology",
+      "Clinical Psychology",
+      "Mental Health"
+    ],
+    "PR": [
+      "Public Relations",
+      "Media Relations",
+      "Crisis Management"
+    ],
+    "Python/Django": [
+      "Python",
+      "Django",
+      "Flask"
+    ],
+    "Quality Analyst": [
+      "Software Testing",
+      "Test Automation",
+      "Quality Assurance"
+    ],
+    "Recruitment": [
+      "Talent Acquisition",
+      "HR"
+    ],
+    "Robotics": [
+      "Robotics",
+      "Embedded Systems",
+      "Arduino"
+    ],
+    "Sales": [
+      "Sales",
+      "Business Development",
+      "CRM"
+    ],
+    "Science": [
+      "Research",
+      "Biology",
+      "Chemistry"
+    ],
+    "Search Engine Optimization (SEO)": [
+      "SEO",
+      "Google Analytics",
+      "Content Marketing"
+    ],
+    "Social Media Marketing": [
+      "Social Media Marketing",
+      "Instagram Marketing",
+      "Content Marketing"
+    ],
+    "Social Work": [
+      "Social Work",
+      "Fundraising",
+      "Event Management"
+    ],
+    "Software Development": [
+      "Python",
+      "Java",
+      "C++",
+      "Agile"
+    ],
+    "Software Testing": [
+      "Software Testing",
+      "Selenium",
+      "Manual Testing"
+    ],
+    "Sports": [
+      "Sports Management",
+      "Event Management",
+      "Sports Coaching"
+    ],
+    "Stock/Market Trading": [
+      "Stock Trading",
+      "Investment Banking",
+      "Financial Markets"
+    ],
+    "Strategy": [
+      "Business Strategy",
+      "Consulting",
+      "Project Management"
+    ],
+    "Subject Matter Expert (SME)": [
+      "Expertise in domain knowledge",
+      "Content Development"
+    ],
+    "Talent Acquisition": [
+      "Recruitment",
+      "Human Resource"
+    ],
+    "Teaching": [
+      "Teaching",
+      "Curriculum Development",
+      "Education"
+    ],
+    "Telecalling": [
+      "Telecalling",
+      "CRM",
+      "Client Servicing"
+    ],
+    "Transcription": [
+      "Transcription",
+      "Typing"
+    ],
+    "Translation": [
+      "Translation",
+      "Multilingual"
+    ],
+    "Travel and Tourism": [
+      "Travel Agency Management",
+      "Tourism Marketing",
+      "Customer Service"
+    ],
+    "UI/UX": [
+      "Figma",
+      "Sketch",
+      "Adobe XD",
+      "Prototyping"
+    ],
+    "Video Making/Editing": [
+      "Adobe Premiere Pro",
+      "Final Cut Pro",
+      "Video Editing"
+    ],
+    "Videography": [
+      "Cinematography",
+      "Videography",
+      "Video Editing"
+    ],
+    "Volunteering": [
+      "Volunteering",
+      "Event Management",
+      "Fundraising"
+    ],
+    "Web Development": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "React"
+    ],
+    "Wordpress Development": [
+      "WordPress",
+      "PHP",
+      "CSS",
+      "HTML"
+    ],
+    "iOS App Development": [
+      "iOS",
+      "Swift",
+      "Objective-C"
+    ]
+  }
+  

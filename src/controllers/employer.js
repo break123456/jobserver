@@ -137,6 +137,7 @@ exports.updateCompanyDetails = async (req, res) => {
 exports.addPost = async (req, res) => {
   try {
     const id = req.user.id;
+    const employer = await Employer.findById(id);
     const { postId, title, skills, locations, workType, numOpening, duration, startDate, responsibility, stipend, perksState, ppo, questions, mobile } = req.body;
     let postSkills = [];
     let postLocs = [];
@@ -144,7 +145,7 @@ exports.addPost = async (req, res) => {
       postSkills.push(item.name);
     });
     locations.forEach((item) => {
-      postLocs.push(item.name);
+      postLocs.push(item.city.toLowerCase());
     });
     if (postId === "new") {
       const newPost = new Post({
