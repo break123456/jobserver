@@ -81,7 +81,7 @@ exports.getPostByTitle = async (req, res) => {
 // filter by skills, location, stipend, start date, duration
 exports.filterPost = async (req, res) => {
     try {
-      const { skills, locations, workModel, startDate, maxDuration, minStipend } = req.query;
+      const { skills, locs, workModel, startDate, maxDuration, minStipend } = req.query;
       // Build the filter object based on the provided criteria
       const filter = {};
 
@@ -93,9 +93,9 @@ exports.filterPost = async (req, res) => {
         filter.workModel = workModel;
       }
 
-      if (locations) {
+      if (locs) {
         // If locations is a single value, convert it to an array
-        filter.locations = locations.split(',');
+        filter.locations = locs.split(',');
       }
 
       //start Date
