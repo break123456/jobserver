@@ -79,8 +79,8 @@ const initSocket = (server) => {
         });
 
         // Listen for chat messages from employer or student
-        socket.on('SEND_MSG', async ({ messageId, chatroomId, sender, content, type }) => {
-            console.log("SEND_MSG", messageId, chatroomId, sender, content, type);
+        socket.on('SEND_MSG', async ({ messageId, chatroomId, sender, content, type, createdAt }) => {
+            console.log("SEND_MSG", messageId, chatroomId, sender, content, type, createdAt);
 
             try {
                 // Ensure the message is tied to a valid chatroom
@@ -104,7 +104,8 @@ const initSocket = (server) => {
                 socket.to(chatroomId).emit('RECE_MSG', {
                     sender,
                     content,
-                    type
+                    type,
+                    createdAt
                 });
             } catch (error) {
                 console.error('Error sending message:', error);

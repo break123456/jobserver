@@ -79,7 +79,6 @@ const PostSchema = new mongoose.Schema(
     },
     cName: { //company name
       type: String,
-      required: true,
       trim: true
     },
     cLogo: { //company logo

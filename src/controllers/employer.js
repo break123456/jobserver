@@ -4,9 +4,11 @@ const Post = require("../models/post");
 const bcrypt = require('bcryptjs');
 const strUtil = require('../helper/string-util')
 const dns = require('dns');
+const dayjs = require('dayjs')
 const jwt = require('jsonwebtoken');
 const Chatroom = require("../models/chatroom");
 const ChatMsg = require("../models/chatmsg");
+
 
 exports.employerSignUp = async (req, res) => {
   const { name, email, password, mobile } = req.body;
@@ -147,10 +149,11 @@ exports.addPost = async (req, res) => {
     locations.forEach((item) => {
       postLocs.push(item.city.toLowerCase());
     });
+    const slug = strUtil.createSlug(title);
     if (postId === "new") {
       const newPost = new Post({
         title,
-        slug: strUtil.createSlug(title),
+        slug: slug,
         skills: postSkills,
         workModel: workType,
         numOpening,
@@ -170,7 +173,7 @@ exports.addPost = async (req, res) => {
     } else {
       await Post.findByIdAndUpdate(postId, {
         title,
-        slug: strUtil.createSlug(title),
+        slug: slug,
         skills: postSkills,
         workModel: workType,
         numOpening,
@@ -190,7 +193,7 @@ exports.addPost = async (req, res) => {
     if (postId !== "new") {
       msg = "Post udpated successfullly";
     }
-    return res.status(200).send({ msg: msg })
+    return res.status(200).send({ msg: msg, slug: slug })
   } catch (error) {
     console.log("error: ", error);
     res.status(401).json({ error: error.message, msg: "Post addition failed" })
@@ -232,9 +235,9 @@ exports.getPosts = async (req, res) => {
     console.log("getposts:" + state);
     let posts = [];
     if (state == undefined) {
-      posts = await Post.find({ ownerId: id }).select('title stats status reason').sort({ updatedAt: -1 });
+      posts = await Post.find({ ownerId: id }).select('title slug stats status reason').sort({ updatedAt: -1 });
     } else {
-      posts = await Post.find({ ownerId: id, status: state }).select('title stats status reason').sort({ updatedAt: -1 });
+      posts = await Post.find({ ownerId: id, status: state }).select('title slug stats status reason').sort({ updatedAt: -1 });
     }
     res.status(200).send({ posts: posts, msg: "success" })
   } catch (error) {
@@ -256,37 +259,37 @@ exports.getPostListForChat = async (req, res) => {
   }
 }
 
-exports.getRoomMessages = async(req, res) => {
+exports.getRoomMessages = async (req, res) => {
   try {
-    const {roomid} = req.query;
-    if(roomid == undefined) {
+    const { roomid } = req.query;
+    if (roomid == undefined) {
       return res.status(401).json({ msg: "Invalid query" })
     }
     const room = await Chatroom.findById(roomid);
-    if(!room) {
+    if (!room) {
       return res.status(401).json({ msg: "Invalid room" })
     }
-    const msgs = await ChatMsg.find({chatroomId: roomid});
+    const msgs = await ChatMsg.find({ chatroomId: roomid });
     return res.status(200).json({ messages: msgs, msg: "success" })
-  } catch(error) {
+  } catch (error) {
     console.log("getRoomMessages error: ", error);
     return res.status(401).json({ error: error.message, msg: "room messages failed" })
   }
 }
 
-exports.getRoomStudent = async(req, res) => {
+exports.getRoomStudent = async (req, res) => {
   try {
-    const {roomid} = req.query;
-    if(roomid == undefined) {
+    const { roomid } = req.query;
+    if (roomid == undefined) {
       return res.status(401).json({ msg: "Invalid query" })
     }
     const room = await Chatroom.findById(roomid).populate('studentId').exec();
-    if(!room) {
+    if (!room) {
       return res.status(401).json({ msg: "Invalid room" })
     }
     return res.status(200).json({ student: room.studentId, msg: "success" })
 
-  } catch(error) {
+  } catch (error) {
 
   }
 }
@@ -300,16 +303,16 @@ exports.getChatRoom = async (req, res) => {
     if (postid == undefined || studentid == undefined) {
       return res.status(401).json({ msg: "Invalid input" })
     }
-      //send all chatrooms
+    //send all chatrooms
     const room = await Chatroom.findOne({ empId: id, postId: postid, studentId: studentid }).select('_id');
-    if(room) {
+    if (room) {
       return res.status(200).send({ room: room, msg: "success" });
     } else {
       //create room
-      const roomData = new Chatroom ({
+      const roomData = new Chatroom({
         postId: postid,
         empId: id,
-        studentId:studentid
+        studentId: studentid
       });
       await roomData.save();
       return res.status(200).send({ roomid: roomData._id, msg: "success" });
@@ -343,8 +346,8 @@ exports.getActiveChatRooms = async (req, res) => {
       //send all chatrooms
       rooms = await Chatroom.find({ empId: id, postId: postid })
         .populate({
-          path: 'userId',          // Populate userId with selected fields
-          select: 'username email' // Only fetch username and email
+          path: 'studentId',          // Populate userId with selected fields
+          select: 'name email' // Only fetch username and email
         })
         .populate({
           path: 'postId',          // Populate postId with selected fields
@@ -458,6 +461,53 @@ exports.getPostApplicationsStatus = async (req, res) => {
   } catch (error) {
     console.log("error: ", error);
     return res.status(401).json({ error: error.message, msg: "Post applications status get failed" })
+  }
+}
+
+exports.sendAssignment = async (req, res) => {
+  try {
+    const empId = req.user.id;
+    const { postId, userids, content, deadline } = req.body;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(202).send({ msg: "Invalid post" })
+    }
+
+    const deadlineDate = dayjs(deadline);
+    const formattedDate = deadlineDate.format('DD-MM-YY');
+
+    const fullContent = content +  ". Complete by data:" + formattedDate;
+    //TODO: verify if userid should applied with this postid
+    userids.forEach(async (studentId) => {
+      //find if room exist 
+      try {
+        const result = await Chatroom.findOneAndUpdate(
+          { empId: empId, studentId: studentId, postId:postId }, // Find by empId and studentId
+          { $setOnInsert: { empId: empId, studentId: studentId, postId:postId , status: "active" } }, // Set fields if document is created
+          { upsert: true, new: true } // Create if not found, return the new document
+        );
+        if (result) {
+          //now add chatmsg
+          // Save the message to the database
+          const chatMessage = new ChatMsg({
+            postId: postId,
+            chatroomId: result._id,
+            sender: empId,
+            content: fullContent,
+            type: "assignment"
+          });
+          await chatMessage.save();
+        }
+      } catch (err) {
+        console.error('Error creating or updating document:', err);
+        return res.status(401).json({ error: error.message, msg: "Send assignment failed exception" })
+
+      }
+    });
+    return res.status(200).send({ msg: "success" })
+  } catch (error) {
+    console.log("error: ", error);
+    return res.status(401).json({ error: error.message, msg: "Send assignment failed" })
   }
 }
 

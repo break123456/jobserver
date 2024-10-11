@@ -25,7 +25,10 @@ const ApplicationSchema = new mongoose.Schema(
       enum : ["pending", "rejected", "shortlist", "hired" ],
       default: "pending"
     },
-    answers : [String]
+    answers : [{
+      type: String,
+      trim: true
+    }]
   },
   {
     timestamps: true,
