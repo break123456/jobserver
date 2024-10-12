@@ -379,9 +379,9 @@ exports.getExperience = async(req,res) => {
 exports.addEducation = async(req,res) => {
   try {
     const id = req.user.id;
-    const { school, percentage, board, startYear, endYear, degree, graduationType, stream } = req.body;
+    const { eduId, school, percentage, board, startYear, endYear, degree, graduationType, stream } = req.body;
 
-    console.log( school, percentage, board, startYear, endYear, degree, graduationType, stream );
+    console.log( eduId, school, percentage, board, startYear, endYear, degree, graduationType, stream );
     const student = await Student.findById(id);
 
     if (!student) {
@@ -398,8 +398,20 @@ exports.addEducation = async(req,res) => {
       graduationType,
       stream
     };
-    //await entry.save();
-    student.education.push(entry);
+    if(eduId !== "new") {
+      // Find the education entry with the matching eduId
+      const educationIndex = student.education.findIndex(edu => edu._id.toString() === eduId);
+      
+      if (educationIndex === -1) {
+        return res.status(404).json({ error: 'Education entry not found' });
+      }
+
+      // Update the existing education entry at the found index
+      student.education[educationIndex] = { ...student.education[educationIndex], ...entry };
+    } else {
+      //await entry.save();
+      student.education.push(entry);
+    }
     await student.save();
     return res.status(200).json({sucess : true, messsage : "Education added."});
   } catch(error) {
