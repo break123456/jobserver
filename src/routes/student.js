@@ -32,6 +32,7 @@ studentRouter.delete('/education/:id', verifyStudentToken, student.deleteEducati
 studentRouter.get('/education/get', verifyStudentToken, student.getEducation)
 studentRouter.post('/skill/add', verifyStudentToken, student.addSkill)
 studentRouter.delete('/skill/del', verifyStudentToken, student.deleteSkill)
+studentRouter.get('/project/get', verifyStudentToken, student.getProject)
 studentRouter.post('/project/add', verifyStudentToken, student.addProject)
 studentRouter.put('/project/:id', verifyStudentToken, student.editProject)
 studentRouter.delete('/project/:id', verifyStudentToken, student.deleteProject)

@@ -37,9 +37,13 @@ const experienceSchema = new mongoose.Schema({
         type: String,
         enum: ["remote", "office", "hybrid"]
     },
+    location: {
+        type: String,
+        trim: true
+    },
     startDate: Date,
     endDate : Date,
-    Description: {
+    description: {
         type: String,
         trim: true
     }
@@ -66,7 +70,7 @@ const educationSchema = new mongoose.Schema({
     },
     degree: {
         type: String, //x,XII, graduation,
-        enum : ["X", "XII", "Graduation"]
+        enum : ["X", "XII", "Graduation", "Master", "Bachelor", "Master", "PhD"]
     },
     graduationType: {
         type: String, //phd, bteach, post,
@@ -88,7 +92,11 @@ const projectSchema = new mongoose.Schema({
     },
     startDate: Date,
     endDate : Date,
-    link: String
+    link: String,
+    description: {
+        type: String,
+        trim: true
+    },
 },
 {
     timestamps: true
