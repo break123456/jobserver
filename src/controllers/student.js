@@ -7,14 +7,21 @@ const {trainingSchema} = require('./../models/schema/student-info')
 const jwt = require('jsonwebtoken');
 const Chatroom = require("../models/chatroom");
 const ChatMsg = require("../models/chatmsg");
+const {verifyCaptcha} = require('../helper/captcha-util')
+
 require("dotenv").config();
 
 exports.studentSignUp = async(req, res)=>{
-    const { name, email, password, mobile } = req.body;
+    const { name, email, password, mobile, answer, captchaHex } = req.body;
   if (!name || !email || !password || !mobile) {
     return res.status(422).json({ Error: "Plz fill all the field properly.." });
   }
   try {
+    //first verify captcha
+    const [verifyStatus, errorObj] = await verifyCaptcha(answer, captchaHex);
+    if (!verifyStatus) {
+      return res.status(422).json({ Error: "Invalid captcha" });
+    }
     const StudentExist = await Student.findOne({ email: email });
     if (StudentExist) {
         return res.status(422).json({ Error: "Student exist" });
