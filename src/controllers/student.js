@@ -151,7 +151,7 @@ exports.getStudentPreferenceById = async (req, res)=>{
 exports.addTraining = async(req,res) => {
   try {
     const id = req.user.id;
-    const { title, company, workMode, startDate, endDate, description } = req.body;
+    const { trainingid, title, company, workMode, startDate, endDate, description } = req.body;
 
     const student = await Student.findById(id);
 
@@ -159,6 +159,7 @@ exports.addTraining = async(req,res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    
     let entry = {
       title: title,
       company,
@@ -167,8 +168,19 @@ exports.addTraining = async(req,res) => {
       endDate: new Date(endDate),
       description
     };
-    //await entry.save();
-    student.training.push(entry);
+    if(trainingid !== "new") {
+      //edit mode
+       // Find the index of the training entry to be edited
+       const itemIndex = student.training.findIndex(t => t._id.toString() === trainingid);
+
+       if (itemIndex === -1) {
+         return res.status(404).json({ error: 'Project not found for the user' });
+       }
+       student.training[itemIndex] = entry;
+    } else {
+      //new 
+      student.training.push(entry);
+    }
     await student.save();
     return res.status(200).json({sucess : true, messsage : "Training added."});
   } catch(error) {
@@ -546,7 +558,7 @@ exports.addProject = async(req,res) => {
   try {
     //TODO: maximum 2 projects allowed
     const id = req.user.id;
-    const { title, startDate, endDate, link, description } = req.body;
+    const { projectid, title, startDate, endDate, link, description } = req.body;
 
     const student = await Student.findById(id);
 
@@ -561,7 +573,18 @@ exports.addProject = async(req,res) => {
       link,
       description
     };
-    student.projects.push(entry);
+    if(projectid !== "new") {
+      //edit mode
+       // Find the index of the training entry to be edited
+      const itemIndex = student.projects.findIndex(t => t._id.toString() === projectid);
+
+      if (itemIndex === -1) {
+        return res.status(404).json({ error: 'Project not found for the user' });
+      }
+      student.projects[itemIndex] = entry;
+    } else {
+      student.projects.push(entry);
+    }
     await student.save();
     return res.status(200).json({success : true, messsage : "Project added."});
   } catch(error) {
