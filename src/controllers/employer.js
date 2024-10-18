@@ -1,4 +1,4 @@
-const { Employer } = require("../models/user");
+const { Employer, User } = require("../models/user");
 const Application = require("../models/application");
 const Post = require("../models/post");
 const bcrypt = require('bcryptjs');
@@ -8,23 +8,35 @@ const dayjs = require('dayjs')
 const jwt = require('jsonwebtoken');
 const Chatroom = require("../models/chatroom");
 const ChatMsg = require("../models/chatmsg");
-
+const {verifyCaptcha} = require("../helper/captcha-util")
 
 exports.employerSignUp = async (req, res) => {
-  const { name, email, password, mobile } = req.body;
-  if (!name || !email || !password || !mobile) {
+  const { name, email, password, mobile, answer, captchaHex } = req.body;
+  if (!name || !email || !password || !mobile || !answer || !captchaHex) {
     return res.status(422).json({ Error: "Plz fill all the field properly.." });
   }
   try {
-    const employeEmail = await Employer.findOne({ email: email });
-    const employeMobile = await Employer.findOne({ mobile: mobile });
+     //first verify captcha
+     const [verifyStatus, errorObj] = await verifyCaptcha(captchaHex, answer);
+     if (!verifyStatus) {
+       return res.status(422).json({ Error: "Invalid captcha" });
+     }
 
-    if (employeEmail) {
-      return res.status(422).json({ Error: "account exist" });
+    // Check if a user with the same email or mobile already exists
+    const existingUser = await User.findOne({
+      $or: [{ email }, { mobile }]
+    });
+    
+    if (existingUser) {
+      // Determine which field(s) already exist
+      if (existingUser.email === email) {
+        return res.status(422).json({ Error: "Email in use" });
+      }
+      if (existingUser.mobile === mobile) {
+        return res.status(422).json({ Error: "mobile already exist" });
+      }
     }
-    if (employeMobile) {
-      return res.status(422).json({ Error: "mobile already exist" });
-    }
+
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const employer = new Employer({

@@ -5,6 +5,7 @@ const crypto = require('crypto')
 
 const {trainingSchema, experienceSchema, educationSchema, projectSchema, additionalSchema} = require('./schema/student-info')
 const companySchema = require('./schema/company-info')
+const { performServerHandshake } = require('http2')
 
 // Base user schema
 const userSchema = new mongoose.Schema({
@@ -22,7 +23,6 @@ const userSchema = new mongoose.Schema({
     },
     mobile: { 
         type: String, 
-        required: true, 
         unique: true 
     },
     password: { 
@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     },    
     active:{
         type: Boolean,
-        default: 1
+        default: 0
     },
     status:{
         type: String,
@@ -52,6 +52,13 @@ const userSchema = new mongoose.Schema({
             return (this.status == "rejected" || this.status == "disabled")
         }
     },
+    emailToken : { 
+        type: String,
+        trim: true
+    }, 
+    emailTokenExpiry : { 
+        type: Date, 
+    },    
     refId: { 
         type: String
     }
@@ -93,6 +100,16 @@ const studentSchema = new mongoose.Schema({
     samples : { //github, other work links
         type: Map,
         of: String
+    },
+    verifyStatus : { //verification status before account active
+        email : {
+            type: Boolean,
+            default : false
+        },
+        mobile : {
+            type: Boolean,
+            default : false
+        }
     },
     experience: [experienceSchema],
     education: [educationSchema],

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const { generateCaptchaImage } =  require('../helper/captcha-util');
 const CaptchaModel = require('../models/captcha');
+const {sendMailUtil} = require('../helper/mail-util');
 
 exports.generate = async (req, res) => {
 
@@ -24,5 +25,19 @@ exports.verify = async (req, res) => {
         return res.status(201).json({ msg: "mismatch token" });
     }
 
+    return res.status(200).json({ msg: "success" });
+}
+
+exports.sendMail = async (req, res) => {
+    const {subject, text, to} = req.body;
+    if(!subject || !text || !to) {
+       return res.status(201).json({ msg: "invalid input" });
+    }
+
+    const [status, reason] = await sendMailUtil(subject, text, to);
+    if(!status) {
+        return res.status(201).json({ msg: reason });
+    }
+    
     return res.status(200).json({ msg: "success" });
 }

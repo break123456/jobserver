@@ -7,37 +7,67 @@ const {trainingSchema} = require('./../models/schema/student-info')
 const jwt = require('jsonwebtoken');
 const Chatroom = require("../models/chatroom");
 const ChatMsg = require("../models/chatmsg");
-const {verifyCaptcha} = require('../helper/captcha-util')
+const {verifyCaptcha} = require('../helper/captcha-util');
+const { sendMailUtil } = require("../helper/mail-util");
+const crypto = require('crypto');
+const settings = require('../configs/settings')
 
 require("dotenv").config();
 
 exports.studentSignUp = async(req, res)=>{
-    const { name, email, password, mobile, answer, captchaHex } = req.body;
-  if (!name || !email || !password || !mobile) {
+    const { name, email, password, answer, captchaHex } = req.body;
+  if (!name || !email || !password || !answer || !captchaHex ) {
     return res.status(422).json({ Error: "Plz fill all the field properly.." });
   }
   try {
     //first verify captcha
-    const [verifyStatus, errorObj] = await verifyCaptcha(answer, captchaHex);
+    const [verifyStatus, errorObj] = await verifyCaptcha(captchaHex, answer);
     if (!verifyStatus) {
       return res.status(422).json({ Error: "Invalid captcha" });
     }
-    const StudentExist = await Student.findOne({ email: email });
-    if (StudentExist) {
-        return res.status(422).json({ Error: "Student exist" });
+    // Check if a user with the same email or mobile already exists
+    const existingUser = await User.findOne({email: email});
+    
+    if (existingUser) {
+      // Determine which field(s) already exist
+        return res.status(422).json({ Error: "Email in use" });
     }
+    
+    //phone verification after email verification in different page
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
+    // Generate email verification token
+    const emailToken = crypto.randomBytes(32).toString('hex');
+    const emailTokenExpiry = Date.now() + 60 * 60 * 1000; // 1-hour expiry
+
     const student = new Student({
       name: name.trim(),
       email: email.trim(),
       password: passwordHash,
-      mobile: mobile,
       role: 'student',
-      active: 1 //TODO: will change later
+      active: 0,  //TODO: will change later,
+      emailToken: emailToken,
+      emailTokenExpiry
     });
+    //TODO , add expirey and a different id 
+    const mailAuthLink = `${process.env.WEB_URL}/student/verify-email?tokenid=${emailToken}`;
+    const companyName = settings.config.company.name;
+    const mailText = 
+    `Hi ${name} 
+
+      Thank you for registering on ${companyName}. We have received a request to authorize this email address for use with internslist. If you requested this verification, please go 
+      to the following URL ${mailAuthLink} to confirm that you are authorized to use this email address.
+        
+     Regards
+     ${companyName} Team
+      `
+    //send activation email
+    const [status, errMsg] = await sendMailUtil(`Verification link for your ${companyName} registration`, mailText, email.trim());
+    if(!status) {
+      return res.status(202).json({ success: false, message: errMsg });
+    }
     const newStudent = await student.save();
-    res.status(200).json({ success: true});
+    res.status(200).json({ success: true, message: "mail sent for verification"});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -56,8 +86,17 @@ exports.studentSignIn = async(req, res)=>{
     
           if (!isMatch) {
             console.log("password not match");
-            res.status(400).json({ error: "invailid login details" });
+            res.status(201).json({ error: "invailid login details" });
           } else {
+            if(!student.active) {
+              //check in which state it is
+              if(!student.verifyStatus.email) {
+                return res.status(202).json({ STATE: "EMAIL_NOT_VERIFIED", error: "email not verified, please verify email" });
+              }
+              if(!student.verifyStatus.phone) {
+                return res.status(202).json({  STATE: "MOBILE_NOT_VERIFIED", error: "phone not mobile, please verify mobile" });
+              }
+            }
             console.log("user is logged in");
             const token = jwt.sign({ 
                 id: student._id, 
@@ -66,7 +105,7 @@ exports.studentSignIn = async(req, res)=>{
             res.status(200).json({ message: "login sucessfull", user : student, token });
           }
         } else {
-          res.status(400).json({ error: "Student error" });
+          return res.status(203).json({ error: "Student not found" });
         }
     } catch (error) {
       res.status(404).json({message: error.message});
@@ -106,6 +145,39 @@ exports.getDetails = async (req, res)=>{
       res.status(200).json(student);
     }else{
       res.status(404).json({success : false, message : "Student not found"})
+    }
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
+}
+
+exports.verifyEmail = async (req, res)=>{
+  try {
+    const {tokenid} = req.query;
+
+    if(!tokenid) {
+        return res
+         .status(402)
+         .json({
+          success: false,
+          message : "invalid input"
+        });        
+    }
+    const student = await Student.findOne({emailToken: tokenid});
+    if(!student ){
+      return res.status(201).json({success : false, message : "Invalid link"});
+    } else {
+      // Ensure `verifyStatus` exists in the student object
+      if (!student.verifyStatus) {
+        student.verifyStatus = { email: false, mobile: false }; // Initialize if not present
+      }
+      student.verifyStatus.email = true;
+      student.emailToken = ""; //remove token
+      await student.save();
+
+      //TODO: send  email to student
+
+      return res.status(200).json({success : true});
     }
   } catch (error) {
     res.status(404).json({message: error.message});
