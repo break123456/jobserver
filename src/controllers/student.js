@@ -10,7 +10,8 @@ const ChatMsg = require("../models/chatmsg");
 const {verifyCaptcha} = require('../helper/captcha-util');
 const { sendMailUtil } = require("../helper/mail-util");
 const crypto = require('crypto');
-const settings = require('../configs/settings')
+const settings = require('../configs/settings');
+const { generateOTP } = require("../helper/string-util");
 
 require("dotenv").config();
 
@@ -92,9 +93,6 @@ exports.studentSignIn = async(req, res)=>{
               //check in which state it is
               if(!student.verifyStatus.email) {
                 return res.status(202).json({ STATE: "EMAIL_NOT_VERIFIED", error: "email not verified, please verify email" });
-              }
-              if(!student.verifyStatus.phone) {
-                return res.status(202).json({  STATE: "MOBILE_NOT_VERIFIED", error: "phone not mobile, please verify mobile" });
               }
             }
             console.log("user is logged in");
@@ -1063,6 +1061,51 @@ exports.getRoomMessages = async(req, res) => {
     }
     const msgs = await ChatMsg.find({chatroomId: roomid});
     return res.status(200).json({ messages: msgs, msg: "success" })
+  } catch(error) {
+    console.log("getRoomMessages error: ", error);
+    return res.status(401).json({ error: error.message, msg: "room messages failed" })
+  }
+}
+
+exports.sendSms = async(req, res) => {
+  try {
+    const {mobile} = req.body;
+    if(mobile == undefined) {
+      return res.status(401).json({ msg: "Invalid query" })
+    }
+    const otp = generateOTP();
+    //TODO: validate phone number
+    return res.status(200).json({ msg: "success" })
+  } catch(error) {
+    console.log("getRoomMessages error: ", error);
+    return res.status(401).json({ error: error.message, msg: "room messages failed" })
+  }
+}
+
+exports.verifySms = async(req, res) => {
+  try {
+    const {id} = req.user.id;
+    const {mobile, answer} = req.body;
+    if(!mobile || !answer) {
+      return res.status(401).json({ msg: "Invalid query" })
+    }
+
+    //for now, assume 1234
+    const otp = "1234";
+    if(answer != otp) {
+      return res.status(201).json({ msg: "invalid otp" })
+    } 
+    const  student = await Student.findById(id);
+    if(!student)
+      return res.status(201).json({ msg: "invalid access" })
+
+    if (!student.verifyStatus) {
+      student.verifyStatus = { email: false, mobile: false }; // Initialize if not present
+    }
+    student.verifyStatus.mobile = true;
+    await student.save();
+    
+    return res.status(200).json({ msg: "success" })
   } catch(error) {
     console.log("getRoomMessages error: ", error);
     return res.status(401).json({ error: error.message, msg: "room messages failed" })

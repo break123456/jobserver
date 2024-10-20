@@ -9,6 +9,8 @@ studentRouter.post('/forgotpassword', student.forgotPassword);
 studentRouter.get('/details', verifyStudentToken, student.getDetails);
 studentRouter.get('/verify-email', student.verifyEmail);
 studentRouter.patch('/profile/update', verifyStudentToken, student.updateStudentbyId);
+studentRouter.post('/sms/send', verifyStudentToken, student.sendSms);
+studentRouter.post('/sms/verify', verifyStudentToken, student.verifySms);
 
 //studentRouter.get('/allstudents', student.getAllStudents);
 studentRouter.patch('/:id', verifyStudentToken, student.updateStudentbyId);

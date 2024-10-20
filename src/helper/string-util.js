@@ -13,7 +13,7 @@ exports.createSlug = (str) => {
   if (typeof str === 'string') {
     str = str.replace(/[^a-zA-Z0-9]/g, '-');
     str = str.toLowerCase();
-    str += "-"+ Date.now()
+    str += "-" + Date.now()
   }
 
   return str;
@@ -27,6 +27,16 @@ exports.createSlugTitle = (str) => {
 exports.generatePassword = () => {
   var length = 8,
     charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    retVal = "";
+  for (var i = 0, n = charset.length; i < length; ++i) {
+    retVal += charset.charAt(Math.floor(Math.random() * n));
+  }
+  return retVal;
+}
+
+exports.generateOTP = () => {
+  var length = 4,
+    charset = "0123456789",
     retVal = "";
   for (var i = 0, n = charset.length; i < length; ++i) {
     retVal += charset.charAt(Math.floor(Math.random() * n));
