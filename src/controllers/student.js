@@ -1084,7 +1084,7 @@ exports.sendSms = async(req, res) => {
 
 exports.verifySms = async(req, res) => {
   try {
-    const {id} = req.user.id;
+    const id = req.user.id;
     const {mobile, answer} = req.body;
     if(!mobile || !answer) {
       return res.status(401).json({ msg: "Invalid query" })
@@ -1107,7 +1107,7 @@ exports.verifySms = async(req, res) => {
     
     return res.status(200).json({ msg: "success" })
   } catch(error) {
-    console.log("getRoomMessages error: ", error);
-    return res.status(401).json({ error: error.message, msg: "room messages failed" })
+    console.log("verifySms error: ", error);
+    return res.status(401).json({ error: error.message, msg: "verifySms failed" })
   }
 }
