@@ -58,7 +58,11 @@ const userSchema = new mongoose.Schema({
     }, 
     emailTokenExpiry : { 
         type: Date, 
-    },    
+    },  
+    resetPasswordToken :{ 
+        type: String,
+        trim: true
+    },
     refId: { 
         type: String
     }

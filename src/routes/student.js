@@ -6,6 +6,7 @@ const studentRouter = express.Router();
 studentRouter.post('/register', student.studentSignUp);
 studentRouter.post('/login', student.studentSignIn);
 studentRouter.post('/forgotpassword', student.forgotPassword);
+studentRouter.post('/resetpassword', student.resetPassword);
 studentRouter.get('/details', verifyStudentToken, student.getDetails);
 studentRouter.get('/verify-email', student.verifyEmail);
 studentRouter.patch('/profile/update', verifyStudentToken, student.updateStudentbyId);

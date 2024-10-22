@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const Chatroom = require("../models/chatroom");
 const ChatMsg = require("../models/chatmsg");
 const {verifyCaptcha} = require('../helper/captcha-util');
-const { sendMailUtil } = require("../helper/mail-util");
+const { sendMailUtil, isEmailValid } = require("../helper/mail-util");
 const crypto = require('crypto');
 const settings = require('../configs/settings');
 const { generateOTP } = require("../helper/string-util");
@@ -112,21 +112,93 @@ exports.studentSignIn = async(req, res)=>{
 
 exports.forgotPassword = async(req, res) => {
   try {
+    //TODO: verify email format
     const { email } = req.body;
-    if (!email) {
-      return res.status(400).json({ error: "fill proper details" });
+    if (!(isEmailValid(email))) {
+      return res.status(201).json({ message: "Invalid email" });
     }
     const student = await Student.findOne({ email });
     if (student) {
       //send mail for password reset link
+       // Generate a secure random token for password reset
+      const resetToken = crypto.randomBytes(32).toString('hex');
+
+      // Set token and expiration (1 hour expiration)
+      student.resetPasswordToken = resetToken;
+      await student.save();
+
+      //TODO , add expirey and a different id 
+      const resetLink = `${process.env.WEB_URL}/student/reset-password?tokenid=${resetToken}&email=${email}`;
+      const companyName = settings.config.company.name;
+      const mailText = 
+      `Hi  
+
+      Forgot Password? No problem!
+      Reset your password and resume your journey on ${companyName}.
+      Click on the following link to reset: 
+      ${resetLink}    
+
+      Regards
+      ${companyName} Team
+        `
+      //send activation email
+      const [status, errMsg] = await sendMailUtil(`Reset your password - ${companyName}`, mailText, email.trim());
+      if(!status) {
+        return res.status(202).json({ success: false, message: errMsg });
+      }
+      return res.status(200).json({ success: true, message: "Reset link sent to your email" });
+
     } else {
-      return res.status(200).json({ error: "Student error" });
+      return res.status(201).json({ success: false, error: "Student error", message: "invalid email" });
     }
   } catch (error) {
     res.status(404).json({message: error.message});
   }
 }
 
+exports.resetPassword = async(req, res) => {
+  try {
+    //TODO: verify email format
+    const { email, tokenid, password } = req.body;
+    if (!(isEmailValid(email))) {
+      return res.status(201).json({ message: "Invalid email" });
+    }
+    const student = await Student.findOne({ email, resetPasswordToken: tokenid });
+    if (student) {
+      // Set token to empty
+      student.resetPasswordToken = "";
+       //phone verification after email verification in different page
+      const salt = await bcrypt.genSalt();
+      const passwordHash = await bcrypt.hash(password, salt);
+      student.password = passwordHash;
+    
+      await student.save();
+
+      //TODO , add expirey and a different id 
+     
+      const companyName = settings.config.company.name;
+      const mailText = 
+      `Hi  
+
+      Your password has been successfully changed.
+      
+      Regards
+      ${companyName} Team
+        `
+      //send activation email
+      const [status, errMsg] = await sendMailUtil(`Password changed - ${companyName}`, mailText, email.trim());
+      if(!status) {
+        return res.status(202).json({ success: false, message: errMsg });
+      }
+      return res.status(200).json({ success: true, message: "Password changed successfully" });
+
+    } else {
+      return res.status(201).json({ success: false, error: "Student error", message: "invalid link" });
+    }
+  } catch (error) {
+    res.status(404).json({message: error.message});
+  }
+}
 exports.getAllStudents = async (req, res)=>{
   try {
     const student = await Student.find({status: true});

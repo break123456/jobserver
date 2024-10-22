@@ -26,3 +26,12 @@ exports.sendMailUtil = async (subject, text, to) => {
         return [false, error];
     }
 }
+
+exports.isEmailValid = (email) => {
+ // Verify email format (basic validation)
+ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+ if (!email || !emailRegex.test(email)) {
+    return false;
+ }
+ return true;
+}
