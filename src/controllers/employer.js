@@ -30,10 +30,10 @@ exports.employerSignUp = async (req, res) => {
     if (existingUser) {
       // Determine which field(s) already exist
       if (existingUser.email === email) {
-        return res.status(422).json({ Error: "Email in use" });
+        return res.status(201).json({ Error: "Email in use" });
       }
       if (existingUser.mobile === mobile) {
-        return res.status(422).json({ Error: "mobile already exist" });
+        return res.status(201).json({ Error: "mobile already exist" });
       }
     }
 
@@ -52,7 +52,7 @@ exports.employerSignUp = async (req, res) => {
 
     res.status(200).json({ success: true, message: "your account has been created successfully..." });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(201).json({ success: false, message: error.message });
   }
 }
 
@@ -60,7 +60,7 @@ exports.employerLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ error: "fill proper details" });
+      return res.status(201).json({ message: "fill proper details" });
     }
     console.log("email:" + email + " password:" + password);
     const employer = await Employer.findOne({ email }).select("+password");
@@ -68,7 +68,7 @@ exports.employerLogin = async (req, res) => {
       const isMatch = await bcrypt.compare(password, employer.password);
       if (!isMatch) {
         console.log("password not match");
-        res.status(400).json({ error: "invailid login details" });
+        res.status(201).json({ message: "invailid login details" });
       } else {
         //check status
         if (employer.status == "pending") {
@@ -83,10 +83,10 @@ exports.employerLogin = async (req, res) => {
         res.status(200).json({ message: "login sucessfull", user: employer, token });
       }
     } else {
-      res.status(400).json({ error: "user not found" });
+      res.status(201).json({ message: "user not found" });
     }
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(201).json({ message: error.message });
   }
 }
 
@@ -96,10 +96,10 @@ exports.employerDetails = async (req, res) => {
     if (employer) {
       res.status(200).json({ success: true, employer: employer });
     } else {
-      res.status(404).json({ success: false, message: "Student not found" })
+      res.status(202).json({ success: false, message: "Account not found" })
     }
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(202).json({ message: error.message });
   }
 }
 
@@ -110,10 +110,10 @@ exports.employerDetails = async (req, res) => {
       const rooms = await Chatroom.find({ empId: req.user.id });
       res.status(200).json({ success: true, rooms: rooms });
     } else {
-      res.status(404).json({ success: false, message: "Student not found" })
+      res.status(202).json({ success: false, message: "Account not found" })
     }
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(202).json({ message: error.message });
   }
 }
 exports.updateCompanyDetails = async (req, res) => {
@@ -122,7 +122,7 @@ exports.updateCompanyDetails = async (req, res) => {
     console.log(id);
     const employer = await Employer.findById(id);
     if (!employer) {
-      return res.status(404).json({ success: false, message: "Employer not found" })
+      return res.status(202).json({ success: false, message: "Employer not found" })
     }
     const { name, description, numEmployee, address, industry, url } = req.body;
 
@@ -144,7 +144,7 @@ exports.updateCompanyDetails = async (req, res) => {
     await employer.save();
     return res.status(200).json({ sucess: true, messsage: "Company data updated successfully!" });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(202).json({ message: error.message });
   }
 }
 

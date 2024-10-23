@@ -193,7 +193,7 @@ exports.resetPassword = async(req, res) => {
       return res.status(200).json({ success: true, message: "Password changed successfully" });
 
     } else {
-      return res.status(201).json({ success: false, error: "Student error", message: "invalid link" });
+      return res.status(201).json({ success: false, error: "Student error", message: "Link expired or invalid link" });
     }
   } catch (error) {
     res.status(404).json({message: error.message});
@@ -957,7 +957,7 @@ exports.applyPost = async(req, res) => {
     //increment count on the post
     postObj.stats.application += 1;
     await postObj.save();
-    return res.status(200).json({sucess : true, messsage : "application applied.", appliedStatus: "pending"});
+    return res.status(200).json({success : true, messsage : "application applied.", appliedStatus: "pending"});
   } catch(error) {
     res.status(500).json({error: error.message});
   }
